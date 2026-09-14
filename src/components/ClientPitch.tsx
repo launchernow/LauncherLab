@@ -3,32 +3,19 @@ import {
   Monitor, 
   Tablet, 
   Smartphone, 
-  Sliders, 
-  Globe, 
-  FileText, 
-  QrCode, 
-  Share2 
+  Sliders 
 } from 'lucide-react';
-import type { BusinessConfig, FontFamily } from '../types/business';
+import type { BusinessConfig, FontFamily, LayoutModel } from '../types/business';
 import { WebsiteTemplates } from './WebsiteTemplates';
 
 interface ClientPitchProps {
   config: BusinessConfig;
   onChange: (updated: BusinessConfig) => void;
-  onExportZip: () => void;
-  onOpenPdfProposal: () => void;
-  onOpenQrModal: () => void;
-  onOpenOgPreview: () => void;
-  onOpenPublishModal: () => void;
 }
 
 export const ClientPitch: React.FC<ClientPitchProps> = ({ 
   config, 
-  onChange, 
-  onOpenPdfProposal,
-  onOpenQrModal,
-  onOpenOgPreview,
-  onOpenPublishModal
+  onChange
 }) => {
   const [device, setDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [showTweaker, setShowTweaker] = useState<boolean>(false);
@@ -80,50 +67,18 @@ export const ClientPitch: React.FC<ClientPitchProps> = ({
           </div>
         </div>
 
-        {/* Commercial Pitch Toolbar Tools */}
+        {/* Commercial Pitch Subheader Controls */}
         <div className="flex items-center space-x-2">
           <button
             onClick={() => setShowTweaker(!showTweaker)}
-            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border text-xs font-extrabold transition-all ${
               showTweaker 
                 ? 'bg-sky-600 border-sky-500 text-white shadow-sm' 
                 : 'bg-slate-100 border-slate-200/80 text-slate-700 hover:bg-slate-200'
             }`}
           >
-            <Sliders className="w-3.5 h-3.5" />
-            <span>Ajustes en Vivo</span>
-          </button>
-
-          <button
-            onClick={onOpenPdfProposal}
-            className="flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs"
-          >
-            <FileText className="w-3.5 h-3.5 text-sky-400" />
-            <span>PDF Propuesta</span>
-          </button>
-
-          <button
-            onClick={onOpenQrModal}
-            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80"
-            title="Código QR & vCard"
-          >
-            <QrCode className="w-4 h-4 text-emerald-600" />
-          </button>
-
-          <button
-            onClick={onOpenOgPreview}
-            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80"
-            title="Previsualizador Redes"
-          >
-            <Share2 className="w-4 h-4 text-purple-600" />
-          </button>
-
-          <button
-            onClick={onOpenPublishModal}
-            className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold shadow-xs"
-          >
-            <Globe className="w-3.5 h-3.5" />
-            <span>Publicar 1-Clic</span>
+            <Sliders className="w-3.5 h-3.5 text-sky-500" />
+            <span>Ajustes de Maquetación en Vivo</span>
           </button>
         </div>
       </div>
@@ -178,6 +133,20 @@ export const ClientPitch: React.FC<ClientPitchProps> = ({
                   ☀️ Claro
                 </button>
               </div>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-bold text-slate-600 mb-1">Modelo de Estructura</label>
+              <select
+                value={config.layoutModel || 'luxury'}
+                onChange={(e) => onChange({ ...config, layoutModel: e.target.value as LayoutModel })}
+                className="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-900 font-bold"
+              >
+                <option value="luxury">🌟 Studio Luxury</option>
+                <option value="modern">⚡ Modern Tech & SaaS</option>
+                <option value="minimal">🌿 Boutique Minimal</option>
+                <option value="conversion">🚀 Lead Conversion</option>
+              </select>
             </div>
 
             <div>

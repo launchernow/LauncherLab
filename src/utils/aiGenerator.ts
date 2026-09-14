@@ -196,6 +196,7 @@ export const generateBusinessWithAI = (promptText: string, selectedIndustry?: In
     address: base.address || 'Paseo de la Castellana 120, Madrid',
     workingHours: base.workingHours || 'Lun - Vie: 09:00 - 20:00',
     visualTheme: base.visualTheme || 'modern-glass',
+    layoutModel: base.layoutModel || 'luxury',
     fontFamily: base.fontFamily || 'jakarta',
     palette: base.palette || {
       primary: '#0284c7',

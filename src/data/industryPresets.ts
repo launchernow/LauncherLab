@@ -27,6 +27,7 @@ export const INDUSTRY_PRESETS: IndustryPreset[] = [
       address: 'Paseo de la Castellana 120, Madrid',
       workingHours: 'Lun - Dom: 13:00 - 16:30 | 20:00 - 23:30',
       visualTheme: 'luxury-gold',
+      layoutModel: 'luxury',
       fontFamily: 'playfair',
       palette: {
         primary: '#d97706',
@@ -125,6 +126,7 @@ export const INDUSTRY_PRESETS: IndustryPreset[] = [
       address: 'Calle Velázquez 45, 1º Izq, Madrid',
       workingHours: 'Lun - Vie: 09:00 - 20:30 | Sáb: 10:00 - 14:00',
       visualTheme: 'modern-glass',
+      layoutModel: 'conversion',
       fontFamily: 'jakarta',
       palette: {
         primary: '#0284c7',
@@ -220,6 +222,7 @@ export const INDUSTRY_PRESETS: IndustryPreset[] = [
       address: 'Gran Vía 28, Planta 4, Madrid',
       workingHours: 'Lun - Vie: 09:00 - 18:30',
       visualTheme: 'vibrant-creative',
+      layoutModel: 'modern',
       fontFamily: 'space',
       palette: {
         primary: '#8b5cf6',
@@ -314,6 +317,7 @@ export const INDUSTRY_PRESETS: IndustryPreset[] = [
       address: 'Calle Aribau 88, Barcelona',
       workingHours: 'Abierto 24 Horas / 365 Días',
       visualTheme: 'vibrant-creative',
+      layoutModel: 'modern',
       fontFamily: 'inter',
       palette: {
         primary: '#ef4444',
@@ -404,6 +408,7 @@ export const INDUSTRY_PRESETS: IndustryPreset[] = [
       address: 'Calle Serrano 10, Planta 3ª, Madrid',
       workingHours: 'Lun - Vie: 08:30 - 19:30',
       visualTheme: 'luxury-gold',
+      layoutModel: 'minimal',
       fontFamily: 'playfair',
       palette: {
         primary: '#1e3a8a',
@@ -493,6 +498,7 @@ export const INDUSTRY_PRESETS: IndustryPreset[] = [
       address: 'Passeig de Gràcia 54, Barcelona',
       workingHours: 'Lun - Sáb: 10:00 - 20:30',
       visualTheme: 'luxury-gold',
+      layoutModel: 'luxury',
       fontFamily: 'playfair',
       palette: {
         primary: '#ec4899',

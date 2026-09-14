@@ -21,7 +21,7 @@ import {
   Wand2,
   Image
 } from 'lucide-react';
-import type { BusinessConfig, IndustryType, VisualTheme, FontFamily } from '../types/business';
+import type { BusinessConfig, IndustryType, VisualTheme, FontFamily, LayoutModel } from '../types/business';
 import { INDUSTRY_PRESETS } from '../data/industryPresets';
 import { generateBusinessWithAI } from '../utils/aiGenerator';
 import confetti from 'canvas-confetti';
@@ -460,9 +460,35 @@ export const FormWizard: React.FC<FormWizardProps> = ({
           <div className="space-y-6">
             <h2 className="text-lg font-bold text-slate-900 border-b border-slate-200 pb-4">Paso 4: Identidad Visual, Colores & Fuentes</h2>
 
-            {/* Visual Theme Archetype */}
+            {/* Layout Model / Architectural Template */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-3">Estilo / Arquetipo Visual</label>
+              <label className="block text-xs font-bold text-slate-700 mb-3">Modelo / Estructura de Maquetación (Layout Model)</label>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {[
+                  { id: 'luxury', name: '🌟 Studio Luxury', desc: 'Rejilla fotográfica asimétrica y tarjetas flotantes' },
+                  { id: 'modern', name: '⚡ Modern SaaS & Tech', desc: 'Héroe centrado, contadores métricos y divisiones bold' },
+                  { id: 'minimal', name: '🌿 Boutique Minimal', desc: 'Split 50/50 limpio y tipografía editorial' },
+                  { id: 'conversion', name: '🚀 Lead Conversion', desc: 'Formulario de cita/reserva directo en el Hero' }
+                ].map((m) => (
+                  <button
+                    key={m.id}
+                    onClick={() => updateField('layoutModel', m.id as LayoutModel)}
+                    className={`p-3 rounded-2xl border text-left transition-all ${
+                      (config.layoutModel || 'luxury') === m.id
+                        ? 'bg-indigo-50 border-indigo-500 text-indigo-950 shadow-sm font-bold'
+                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300'
+                    }`}
+                  >
+                    <div className="font-bold text-xs mb-1">{m.name}</div>
+                    <div className="text-[10px] text-slate-500 leading-snug">{m.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Visual Theme Archetype */}
+            <div className="border-t border-slate-200 pt-4">
+              <label className="block text-xs font-bold text-slate-700 mb-3">Estilo / Arquetipo de Color</label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[
                   { id: 'modern-glass', name: 'Modern Glass', desc: 'Neón, cristales y tecnología' },
@@ -475,7 +501,7 @@ export const FormWizard: React.FC<FormWizardProps> = ({
                     onClick={() => updateField('visualTheme', t.id as VisualTheme)}
                     className={`p-3 rounded-2xl border text-left transition-all ${
                       config.visualTheme === t.id
-                        ? 'bg-sky-50 border-sky-500 text-sky-900 shadow-sm'
+                        ? 'bg-sky-50 border-sky-500 text-sky-900 shadow-sm font-bold'
                         : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300'
                     }`}
                   >

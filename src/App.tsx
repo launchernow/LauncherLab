@@ -75,11 +75,6 @@ export function App() {
           <ClientPitch
             config={config}
             onChange={setConfig}
-            onExportZip={handleExportZip}
-            onOpenPdfProposal={() => setShowPdfProposal(true)}
-            onOpenQrModal={() => setShowQrModal(true)}
-            onOpenOgPreview={() => setShowOgPreview(true)}
-            onOpenPublishModal={() => setShowPublishModal(true)}
           />
         )}
 

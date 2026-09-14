@@ -239,98 +239,194 @@ export const WebsiteTemplates: React.FC<WebsiteTemplatesProps> = ({ config }) =>
               />
 
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                  
-                  {/* Left Column: Text & Hero Content */}
-                  <div className="lg:col-span-7 space-y-6 text-left">
+                
+                {/* MODEL 1: LUXURY STUDIO (Asymmetric grid + float card) */}
+                {(config.layoutModel || 'luxury') === 'luxury' && (
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    <div className="lg:col-span-7 space-y-6 text-left">
+                      {aboutBadge && (
+                        <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full text-xs font-extrabold border shadow-sm" style={{ backgroundColor: `${palette.primary}15`, borderColor: `${palette.primary}40`, color: palette.primary }}>
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>{aboutBadge}</span>
+                        </div>
+                      )}
+                      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.12]">
+                        {heroHeadline}
+                      </h1>
+                      <p className="text-base sm:text-lg opacity-85 leading-relaxed font-medium max-w-xl">
+                        {heroSubheadline}
+                      </p>
+                      <div className="flex flex-wrap items-center gap-4 text-xs font-bold pt-2 opacity-90">
+                        <div className="flex items-center space-x-1.5 bg-amber-500/10 text-amber-500 px-3 py-1.5 rounded-xl border border-amber-500/20">
+                          <Star className="w-3.5 h-3.5 fill-current" />
+                          <span>4.9 / 5 Reseñas de Clientes</span>
+                        </div>
+                        <div className="flex items-center space-x-1.5 bg-emerald-500/10 text-emerald-500 px-3 py-1.5 rounded-xl border border-emerald-500/20">
+                          <ShieldCheck className="w-3.5 h-3.5" />
+                          <span>Garantía de Satisfacción</span>
+                        </div>
+                      </div>
+                      <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
+                        <button onClick={() => triggerBooking('Consulta General')} className="w-full sm:w-auto px-8 py-4 rounded-2xl text-white text-sm font-extrabold shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-2.5" style={{ background: `linear-gradient(135deg, ${palette.primary}, ${palette.accent})` }}>
+                          <span>{ctaText}</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </button>
+                        {secondaryCtaText && (
+                          <button onClick={() => setActiveTab('services')} className={`w-full sm:w-auto px-8 py-4 rounded-2xl text-sm font-extrabold border transition-all ${isDark ? 'border-slate-800 hover:border-slate-700 bg-slate-900/60' : 'border-slate-300 hover:border-slate-400 bg-white'}`}>
+                            {secondaryCtaText}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    <div className="lg:col-span-5 relative">
+                      <div className="relative mx-auto max-w-md lg:max-w-none">
+                        <div className="rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-900/10 transform rotate-1 hover:rotate-0 transition-transform duration-500">
+                          <img src={heroImage} alt={name} className="w-full h-[400px] object-cover" />
+                        </div>
+                        <div className={`absolute -bottom-6 -left-6 p-4 rounded-2xl border shadow-2xl max-w-xs flex items-center space-x-3 backdrop-blur-xl ${isDark ? 'bg-slate-900/90 border-slate-800 text-white' : 'bg-white/90 border-slate-200 text-slate-900'}`}>
+                          <div className="w-12 h-12 rounded-xl bg-sky-500/20 border border-sky-400/30 flex items-center justify-center text-sky-400 shrink-0">
+                            <Award className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <div className="font-extrabold text-sm">+1.200 Casos Exitosos</div>
+                            <div className="text-[11px] opacity-70 font-medium">Atención profesional de alta gama</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* MODEL 2: MODERN TECH & SAAS (Centered hero + metric counters + photo hero) */}
+                {config.layoutModel === 'modern' && (
+                  <div className="text-center max-w-4xl mx-auto space-y-8">
                     {aboutBadge && (
-                      <div 
-                        className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full text-xs font-extrabold border shadow-sm"
-                        style={{
-                          backgroundColor: `${palette.primary}15`,
-                          borderColor: `${palette.primary}40`,
-                          color: palette.primary
-                        }}
-                      >
-                        <Sparkles className="w-3.5 h-3.5" />
+                      <div className="inline-flex items-center space-x-2 px-5 py-2 rounded-full text-xs font-black uppercase tracking-wider border shadow-md" style={{ backgroundColor: `${palette.primary}20`, borderColor: palette.primary, color: palette.accent }}>
+                        <Sparkles className="w-4 h-4" />
                         <span>{aboutBadge}</span>
                       </div>
                     )}
-
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.12]">
+                    <h1 className="text-5xl sm:text-6xl font-black tracking-tight leading-[1.08]">
                       {heroHeadline}
                     </h1>
-
-                    <p className="text-base sm:text-lg opacity-85 leading-relaxed font-medium max-w-xl">
+                    <p className="text-lg opacity-85 leading-relaxed font-normal max-w-2xl mx-auto">
                       {heroSubheadline}
                     </p>
 
-                    {/* Trust Badges */}
-                    <div className="flex flex-wrap items-center gap-4 text-xs font-bold pt-2 opacity-90">
-                      <div className="flex items-center space-x-1.5 bg-amber-500/10 text-amber-500 px-3 py-1.5 rounded-xl border border-amber-500/20">
-                        <Star className="w-3.5 h-3.5 fill-current" />
-                        <span>4.9 / 5 Reseñas de Clientes</span>
-                      </div>
-                      <div className="flex items-center space-x-1.5 bg-emerald-500/10 text-emerald-500 px-3 py-1.5 rounded-xl border border-emerald-500/20">
-                        <ShieldCheck className="w-3.5 h-3.5" />
-                        <span>Garantía de Satisfacción</span>
-                      </div>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
-                      <button
-                        onClick={() => triggerBooking('Consulta General')}
-                        className="w-full sm:w-auto px-8 py-4 rounded-2xl text-white text-sm font-extrabold shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-2.5"
-                        style={{ background: `linear-gradient(135deg, ${palette.primary}, ${palette.accent})` }}
-                      >
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+                      <button onClick={() => triggerBooking('Consulta General')} className="w-full sm:w-auto px-9 py-4 rounded-2xl text-white text-sm font-black shadow-2xl transition-all transform hover:scale-105 flex items-center justify-center space-x-2" style={{ background: `linear-gradient(135deg, ${palette.primary}, ${palette.accent})` }}>
                         <span>{ctaText}</span>
                         <ArrowRight className="w-4 h-4" />
                       </button>
-
                       {secondaryCtaText && (
-                        <button
-                          onClick={() => setActiveTab('services')}
-                          className={`w-full sm:w-auto px-8 py-4 rounded-2xl text-sm font-extrabold border transition-all ${
-                            isDark ? 'border-slate-800 hover:border-slate-700 bg-slate-900/60' : 'border-slate-300 hover:border-slate-400 bg-white'
-                          }`}
-                        >
+                        <button onClick={() => setActiveTab('services')} className={`w-full sm:w-auto px-9 py-4 rounded-2xl text-sm font-black border transition-all ${isDark ? 'border-slate-800 bg-slate-900/80 text-white hover:bg-slate-800' : 'border-slate-300 bg-white text-slate-900 hover:bg-slate-50'}`}>
                           {secondaryCtaText}
                         </button>
                       )}
                     </div>
-                  </div>
 
-                  {/* Right Column: Studio Photo Grid & Real Visuals */}
-                  <div className="lg:col-span-5 relative">
-                    <div className="relative mx-auto max-w-md lg:max-w-none">
-                      
-                      {/* Main Studio Image */}
-                      <div className="rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-900/10 transform rotate-1 hover:rotate-0 transition-transform duration-500">
-                        <img 
-                          src={heroImage} 
-                          alt={name} 
-                          className="w-full h-[400px] object-cover"
-                        />
+                    {/* Metric Counter Bar */}
+                    <div className={`mt-12 p-6 rounded-3xl border grid grid-cols-2 md:grid-cols-4 gap-6 backdrop-blur-xl ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200'}`}>
+                      <div>
+                        <div className="text-3xl font-black" style={{ color: palette.accent }}>99.4%</div>
+                        <div className="text-xs opacity-70 font-bold uppercase mt-1">Tasa de Éxito</div>
                       </div>
-
-                      {/* Secondary Floating Card with Avatar Metrics */}
-                      <div className={`absolute -bottom-6 -left-6 p-4 rounded-2xl border shadow-2xl max-w-xs flex items-center space-x-3 backdrop-blur-xl ${
-                        isDark ? 'bg-slate-900/90 border-slate-800 text-white' : 'bg-white/90 border-slate-200 text-slate-900'
-                      }`}>
-                        <div className="w-12 h-12 rounded-xl bg-sky-500/20 border border-sky-400/30 flex items-center justify-center text-sky-400 shrink-0">
-                          <Award className="w-6 h-6" />
-                        </div>
-                        <div>
-                          <div className="font-extrabold text-sm">+1.200 Casos Exitosos</div>
-                          <div className="text-[11px] opacity-70 font-medium">Atención profesional de alta gama</div>
-                        </div>
+                      <div>
+                        <div className="text-3xl font-black" style={{ color: palette.accent }}>+1.400</div>
+                        <div className="text-xs opacity-70 font-bold uppercase mt-1">Clientes Satisfechos</div>
                       </div>
-
+                      <div>
+                        <div className="text-3xl font-black" style={{ color: palette.accent }}>24/7</div>
+                        <div className="text-xs opacity-70 font-bold uppercase mt-1">Soporte Continuo</div>
+                      </div>
+                      <div>
+                        <div className="text-3xl font-black" style={{ color: palette.accent }}>10 Años</div>
+                        <div className="text-xs opacity-70 font-bold uppercase mt-1">Garantía Escrita</div>
+                      </div>
                     </div>
                   </div>
+                )}
 
-                </div>
+                {/* MODEL 3: BOUTIQUE MINIMAL (50/50 Editorial Split) */}
+                {config.layoutModel === 'minimal' && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div className="space-y-6 text-left">
+                      <span className="text-xs font-black uppercase tracking-widest block text-sky-400">
+                        {aboutBadge || 'Estudio Profesional'}
+                      </span>
+                      <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+                        {heroHeadline}
+                      </h1>
+                      <div className="w-16 h-1 bg-sky-500 rounded-full"></div>
+                      <p className="text-base opacity-80 leading-relaxed font-serif italic">
+                        "{heroSubheadline}"
+                      </p>
+                      <div className="pt-4 flex items-center space-x-4">
+                        <button onClick={() => triggerBooking('Consulta General')} className="px-8 py-3.5 rounded-xl text-white text-xs font-bold uppercase tracking-wider custom-gradient-btn shadow-md flex items-center space-x-2">
+                          <span>{ctaText}</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="rounded-2xl overflow-hidden shadow-xl border border-slate-800/40">
+                      <img src={heroImage} alt={name} className="w-full h-[420px] object-cover" />
+                    </div>
+                  </div>
+                )}
+
+                {/* MODEL 4: LEAD CONVERSION (Embedded Booking Form in Hero) */}
+                {config.layoutModel === 'conversion' && (
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    <div className="lg:col-span-7 space-y-6 text-left">
+                      <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full text-xs font-black bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                        <ShieldCheck className="w-3.5 h-3.5" />
+                        <span>Reserva Directa sin Esperas</span>
+                      </div>
+                      <h1 className="text-4xl sm:text-5xl font-black tracking-tight leading-tight">
+                        {heroHeadline}
+                      </h1>
+                      <p className="text-base opacity-85 leading-relaxed">
+                        {heroSubheadline}
+                      </p>
+                      <div className="flex items-center space-x-6 text-xs font-bold opacity-85 pt-2">
+                        <div className="flex items-center space-x-2 text-emerald-400"><CheckCircle2 className="w-4 h-4" /><span>1ª Cita Gratuita</span></div>
+                        <div className="flex items-center space-x-2 text-emerald-400"><CheckCircle2 className="w-4 h-4" /><span>Reserva 100% Segura</span></div>
+                      </div>
+                    </div>
+
+                    {/* Embedded Hero Booking Form Card */}
+                    <div className="lg:col-span-5">
+                      <div className={`p-8 rounded-3xl border shadow-2xl ${isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-white border-slate-200'} text-left space-y-4`}>
+                        <div className="flex items-center justify-between border-b border-slate-800/40 pb-3">
+                          <h3 className="font-extrabold text-base text-slate-900 dark:text-white">Solicitar Cita / Información</h3>
+                          <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400">Respuesta &lt; 15 min</span>
+                        </div>
+                        <form onSubmit={handleFormSubmit} className="space-y-3">
+                          <div>
+                            <label className="block text-[11px] font-bold opacity-80 mb-1">Nombre Completo</label>
+                            <input type="text" required className="w-full px-3.5 py-2.5 rounded-xl border bg-slate-950 text-xs text-white focus:outline-none focus:border-sky-500" placeholder="Tu nombre..." />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] font-bold opacity-80 mb-1">Teléfono o WhatsApp</label>
+                            <input type="text" required className="w-full px-3.5 py-2.5 rounded-xl border bg-slate-950 text-xs text-white focus:outline-none focus:border-sky-500" placeholder="+34 600 000 000" />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] font-bold opacity-80 mb-1">Servicio de Interés</label>
+                            <select className="w-full px-3.5 py-2.5 rounded-xl border bg-slate-950 text-xs text-white focus:outline-none focus:border-sky-500 font-bold">
+                              {services.map(s => <option key={s.id} value={s.title}>{s.title} ({s.price})</option>)}
+                            </select>
+                          </div>
+                          <button type="submit" className="w-full py-3.5 rounded-xl text-white text-xs font-black uppercase tracking-wider custom-gradient-btn shadow-lg mt-2 flex items-center justify-center space-x-1">
+                            <span>{ctaText}</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
               </div>
             </section>
           )}

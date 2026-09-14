@@ -14,6 +14,12 @@ export type VisualTheme =
   | 'minimal-clean' 
   | 'vibrant-creative';
 
+export type LayoutModel = 
+  | 'luxury' 
+  | 'modern' 
+  | 'minimal' 
+  | 'conversion';
+
 export type FontFamily = 'inter' | 'jakarta' | 'playfair' | 'space';
 
 export type AppLanguage = 'es' | 'en' | 'fr' | 'de';
@@ -122,6 +128,7 @@ export interface BusinessConfig {
   workingHours: string;
   googleMapsEmbedUrl?: string;
   visualTheme: VisualTheme;
+  layoutModel?: LayoutModel;
   fontFamily: FontFamily;
   palette: ColorPalette;
   language: AppLanguage;
