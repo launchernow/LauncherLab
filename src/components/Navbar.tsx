@@ -9,7 +9,7 @@ import {
   Sparkles, 
   FileText, 
   QrCode, 
-  Share2, 
+  Share2,
   Globe,
   HelpCircle,
   ChevronDown

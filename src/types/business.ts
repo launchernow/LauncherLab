@@ -40,6 +40,7 @@ export interface ServiceItem {
   price: string;
   iconName: string;
   badge?: string;
+  imageUrl?: string;
 }
 
 export interface TestimonialItem {
