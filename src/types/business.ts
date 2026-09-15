@@ -131,6 +131,9 @@ export interface BusinessConfig {
   layoutModel?: LayoutModel;
   fontFamily: FontFamily;
   palette: ColorPalette;
+  customLogoUrl?: string;
+  customHeroUrl?: string;
+  aboutImageUrl?: string;
   language: AppLanguage;
   publishedUrl?: string;
   paymentMethods: {
@@ -140,7 +143,9 @@ export interface BusinessConfig {
   };
   sections: {
     hero: boolean;
+    topBanner?: boolean;
     benefits?: boolean;
+    process?: boolean;
     about: boolean;
     services: boolean;
     gallery?: boolean;

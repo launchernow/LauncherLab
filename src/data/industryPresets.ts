@@ -40,6 +40,7 @@ export const INDUSTRY_PRESETS: IndustryPreset[] = [
       sections: {
         hero: true,
         benefits: true,
+        process: true,
         about: true,
         services: true,
         portfolio: true,
@@ -139,6 +140,7 @@ export const INDUSTRY_PRESETS: IndustryPreset[] = [
       sections: {
         hero: true,
         benefits: true,
+        process: true,
         about: true,
         services: true,
         portfolio: true,
@@ -235,6 +237,7 @@ export const INDUSTRY_PRESETS: IndustryPreset[] = [
       sections: {
         hero: true,
         benefits: true,
+        process: true,
         about: true,
         services: true,
         portfolio: true,
@@ -330,6 +333,7 @@ export const INDUSTRY_PRESETS: IndustryPreset[] = [
       sections: {
         hero: true,
         benefits: true,
+        process: true,
         about: true,
         services: true,
         portfolio: true,
@@ -421,6 +425,7 @@ export const INDUSTRY_PRESETS: IndustryPreset[] = [
       sections: {
         hero: true,
         benefits: true,
+        process: true,
         about: true,
         services: true,
         portfolio: true,
@@ -511,6 +516,7 @@ export const INDUSTRY_PRESETS: IndustryPreset[] = [
       sections: {
         hero: true,
         benefits: true,
+        process: true,
         about: true,
         services: true,
         portfolio: true,

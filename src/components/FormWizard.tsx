@@ -24,6 +24,7 @@ import {
 import type { BusinessConfig, IndustryType, VisualTheme, FontFamily, LayoutModel } from '../types/business';
 import { INDUSTRY_PRESETS } from '../data/industryPresets';
 import { generateBusinessWithAI } from '../utils/aiGenerator';
+import { ImagePickerModal } from './ImagePickerModal';
 import confetti from 'canvas-confetti';
 
 interface FormWizardProps {
@@ -42,6 +43,7 @@ export const FormWizard: React.FC<FormWizardProps> = ({
   const [step, setStep] = useState<number>(1);
   const [aiPrompt, setAiPrompt] = useState<string>('');
   const [isAiGenerating, setIsAiGenerating] = useState<boolean>(false);
+  const [showImagePicker, setShowImagePicker] = useState<boolean>(false);
 
   const steps = [
     { id: 1, name: 'Negocio & IA', icon: Building2 },
@@ -159,12 +161,20 @@ export const FormWizard: React.FC<FormWizardProps> = ({
             </h1>
             <p className="text-xs text-slate-500 mt-0.5">Define los detalles del negocio para generar el sitio web en tiempo real.</p>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => setShowImagePicker(true)}
+              className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-extrabold border border-sky-300 shadow-xs"
+            >
+              <Image className="w-3.5 h-3.5 text-sky-600" />
+              <span>Subir Fotos & Logo</span>
+            </button>
+
             <button
               onClick={onOpenLogoBuilder}
               className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200"
             >
-              <Image className="w-3.5 h-3.5 text-sky-600" />
+              <Image className="w-3.5 h-3.5 text-slate-500" />
               <span>Diseñar Logo SVG</span>
             </button>
 
@@ -472,7 +482,34 @@ export const FormWizard: React.FC<FormWizardProps> = ({
                 ].map((m) => (
                   <button
                     key={m.id}
-                    onClick={() => updateField('layoutModel', m.id as LayoutModel)}
+                    onClick={() => {
+                      const newModel = m.id as LayoutModel;
+                      const modelPresets: Record<LayoutModel, { palette: typeof config.palette; fontFamily: FontFamily }> = {
+                        luxury: {
+                          palette: { primary: '#d97706', secondary: '#78350f', accent: '#f59e0b', bgMode: 'dark' },
+                          fontFamily: 'playfair'
+                        },
+                        modern: {
+                          palette: { primary: '#0284c7', secondary: '#4338ca', accent: '#38bdf8', bgMode: 'dark' },
+                          fontFamily: 'space'
+                        },
+                        minimal: {
+                          palette: { primary: '#18181b', secondary: '#3f3f46', accent: '#0f172a', bgMode: 'light' },
+                          fontFamily: 'inter'
+                        },
+                        conversion: {
+                          palette: { primary: '#059669', secondary: '#047857', accent: '#10b981', bgMode: 'dark' },
+                          fontFamily: 'jakarta'
+                        }
+                      };
+                      const preset = modelPresets[newModel];
+                      onChange({
+                        ...config,
+                        layoutModel: newModel,
+                        palette: preset ? preset.palette : config.palette,
+                        fontFamily: preset ? preset.fontFamily : config.fontFamily
+                      });
+                    }}
                     className={`p-3 rounded-2xl border text-left transition-all ${
                       (config.layoutModel || 'luxury') === m.id
                         ? 'bg-indigo-50 border-indigo-500 text-indigo-950 shadow-sm font-bold'
@@ -612,6 +649,7 @@ export const FormWizard: React.FC<FormWizardProps> = ({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
+                { id: 'topBanner', name: 'Franja de Anuncio Superior', desc: 'Banner destacado de atención/promoción arriba del todo' },
                 { id: 'hero', name: 'Sección Principal (Hero Banner)', desc: 'Titular, subtítulo y botones de llamada a la acción' },
                 { id: 'about', name: 'Sobre Nosotros', desc: 'Historia del negocio y datos destacados' },
                 { id: 'services', name: 'Servicios / Catálogo', desc: 'Tarjetas de servicios y precios' },
@@ -685,6 +723,14 @@ export const FormWizard: React.FC<FormWizardProps> = ({
           </button>
         )}
       </div>
+
+      {showImagePicker && (
+        <ImagePickerModal 
+          config={config}
+          onChange={onChange}
+          onClose={() => setShowImagePicker(false)}
+        />
+      )}
     </div>
   );
 };

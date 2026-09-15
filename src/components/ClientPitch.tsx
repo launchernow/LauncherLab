@@ -3,10 +3,12 @@ import {
   Monitor, 
   Tablet, 
   Smartphone, 
-  Sliders 
+  Sliders,
+  Image as ImageIcon
 } from 'lucide-react';
 import type { BusinessConfig, FontFamily, LayoutModel } from '../types/business';
 import { WebsiteTemplates } from './WebsiteTemplates';
+import { ImagePickerModal } from './ImagePickerModal';
 
 interface ClientPitchProps {
   config: BusinessConfig;
@@ -19,6 +21,7 @@ export const ClientPitch: React.FC<ClientPitchProps> = ({
 }) => {
   const [device, setDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [showTweaker, setShowTweaker] = useState<boolean>(false);
+  const [showImagePicker, setShowImagePicker] = useState<boolean>(false);
 
   const updatePalette = (key: keyof BusinessConfig['palette'], val: string) => {
     onChange({
@@ -79,6 +82,14 @@ export const ClientPitch: React.FC<ClientPitchProps> = ({
 
         {/* Commercial Pitch Subheader Controls */}
         <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setShowImagePicker(true)}
+            className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl border border-sky-300 bg-sky-50 text-sky-700 hover:bg-sky-100 text-xs font-extrabold transition-all shadow-xs"
+          >
+            <ImageIcon className="w-3.5 h-3.5 text-sky-600" />
+            <span>Subir Fotos & Logo</span>
+          </button>
+
           <button
             onClick={() => setShowTweaker(!showTweaker)}
             className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border text-xs font-extrabold transition-all ${
@@ -147,16 +158,43 @@ export const ClientPitch: React.FC<ClientPitchProps> = ({
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-600 mb-1">Modelo de Estructura</label>
+                <label className="block text-[11px] font-bold text-slate-600 mb-1">Modelo de Estructura & Estilo</label>
                 <select
                   value={config.layoutModel || 'luxury'}
-                  onChange={(e) => onChange({ ...config, layoutModel: e.target.value as LayoutModel })}
+                  onChange={(e) => {
+                    const newModel = e.target.value as LayoutModel;
+                    const modelPresets: Record<LayoutModel, { palette: typeof config.palette; fontFamily: FontFamily }> = {
+                      luxury: {
+                        palette: { primary: '#d97706', secondary: '#78350f', accent: '#f59e0b', bgMode: 'dark' },
+                        fontFamily: 'playfair'
+                      },
+                      modern: {
+                        palette: { primary: '#0284c7', secondary: '#4338ca', accent: '#38bdf8', bgMode: 'dark' },
+                        fontFamily: 'space'
+                      },
+                      minimal: {
+                        palette: { primary: '#18181b', secondary: '#3f3f46', accent: '#0f172a', bgMode: 'light' },
+                        fontFamily: 'inter'
+                      },
+                      conversion: {
+                        palette: { primary: '#059669', secondary: '#047857', accent: '#10b981', bgMode: 'dark' },
+                        fontFamily: 'jakarta'
+                      }
+                    };
+                    const preset = modelPresets[newModel];
+                    onChange({
+                      ...config,
+                      layoutModel: newModel,
+                      palette: preset ? preset.palette : config.palette,
+                      fontFamily: preset ? preset.fontFamily : config.fontFamily
+                    });
+                  }}
                   className="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-900 font-bold"
                 >
-                  <option value="luxury">🌟 Studio Luxury</option>
-                  <option value="modern">⚡ Modern Tech & SaaS</option>
-                  <option value="minimal">🌿 Boutique Minimal</option>
-                  <option value="conversion">🚀 Lead Conversion</option>
+                  <option value="luxury">🌟 Studio Luxury (Dorado / Clásico)</option>
+                  <option value="modern">⚡ Modern Tech & SaaS (Cristalino / Neón)</option>
+                  <option value="minimal">🌿 Boutique Minimal (Monocromo / Limpio)</option>
+                  <option value="conversion">🚀 Lead Conversion (Esmeralda / Directo)</option>
                 </select>
               </div>
 
@@ -180,7 +218,9 @@ export const ClientPitch: React.FC<ClientPitchProps> = ({
               <span className="text-[11px] font-bold text-slate-600">🧩 Activar / Ocultar Secciones:</span>
               <div className="flex flex-wrap items-center gap-1.5">
                 {[
+                  { key: 'topBanner', label: '📢 Franja Superior' },
                   { key: 'services', label: '💼 Servicios' },
+                  { key: 'process', label: '⚙️ Metodología' },
                   { key: 'portfolio', label: '🖼️ Portfolio' },
                   { key: 'blog', label: '📰 Blog' },
                   { key: 'about', label: '🏢 Nosotros' },
@@ -231,6 +271,14 @@ export const ClientPitch: React.FC<ClientPitchProps> = ({
           </div>
         </div>
       </div>
+
+      {showImagePicker && (
+        <ImagePickerModal 
+          config={config}
+          onChange={onChange}
+          onClose={() => setShowImagePicker(false)}
+        />
+      )}
 
     </div>
   );

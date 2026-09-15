@@ -51,11 +51,13 @@ export const generateStandaloneHtml = (config: BusinessConfig): string => {
   const mutedTextColor = isDark ? '#94a3b8' : '#64748b';
   const borderColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)';
 
-  const heroPhoto = portfolio && portfolio[0]?.imageUrl 
-    ? portfolio[0].imageUrl 
-    : services && services[0]?.imageUrl 
-      ? services[0].imageUrl 
-      : 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80';
+  const heroPhoto = config.customHeroUrl 
+    ? config.customHeroUrl 
+    : portfolio && portfolio[0]?.imageUrl 
+      ? portfolio[0].imageUrl 
+      : services && services[0]?.imageUrl 
+        ? services[0].imageUrl 
+        : 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80';
 
   return `<!DOCTYPE html>
 <html lang="es" class="scroll-smooth">
@@ -121,13 +123,23 @@ export const generateStandaloneHtml = (config: BusinessConfig): string => {
 </head>
 <body class="antialiased min-h-screen flex flex-col pb-16 md:pb-0">
 
+  ${sections.topBanner !== false ? `
+  <div class="py-2 px-4 text-center text-white text-xs font-extrabold uppercase tracking-wider custom-gradient-btn shadow-sm">
+    🔥 ATENCIÓN PROFESIONAL & RESERVA DIRECTA EN TIEMPO REAL
+  </div>
+  ` : ''}
+
   <!-- Header Navigation -->
   <header class="sticky top-0 z-50 backdrop-blur-md border-b" style="background-color: ${cardBgColor}ee; border-color: ${borderColor};">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-extrabold text-xl custom-gradient-btn shadow-md">
-          ${name.charAt(0)}
-        </div>
+        ${config.customLogoUrl ? `
+          <img src="${config.customLogoUrl}" alt="${name}" class="h-10 w-auto max-w-[150px] object-contain rounded-xl shadow-xs" />
+        ` : `
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-extrabold text-xl custom-gradient-btn shadow-md">
+            ${name.charAt(0)}
+          </div>
+        `}
         <div>
           <span class="text-xl font-extrabold tracking-tight block leading-none" style="color: ${textColor};">${name}</span>
           <span class="text-xs uppercase font-semibold tracking-wider opacity-75" style="color: ${mutedTextColor};">${slogan}</span>
@@ -135,12 +147,12 @@ export const generateStandaloneHtml = (config: BusinessConfig): string => {
       </div>
       
       <nav class="hidden md:flex items-center space-x-6 text-sm font-extrabold">
-        <a href="#home" class="hover:text-sky-400">Inicio</a>
-        ${sections.services ? `<a href="#services" class="hover:text-sky-400">Servicios</a>` : ''}
-        ${sections.about ? `<a href="#about" class="hover:text-sky-400">Nosotros</a>` : ''}
-        ${sections.portfolio && portfolio && portfolio.length > 0 ? `<a href="#portfolio" class="hover:text-sky-400">Portfolio</a>` : ''}
-        ${sections.blog && blog && blog.length > 0 ? `<a href="#blog" class="hover:text-sky-400">Blog</a>` : ''}
-        ${sections.contact ? `<a href="#contact" class="hover:text-sky-400">Contacto</a>` : ''}
+        <a href="#home" class="hover:opacity-80 transition-opacity" style="color: ${palette.primary};">Inicio</a>
+        ${sections.services ? `<a href="#services" class="hover:opacity-80 transition-opacity">Servicios</a>` : ''}
+        ${sections.about ? `<a href="#about" class="hover:opacity-80 transition-opacity">Nosotros</a>` : ''}
+        ${sections.portfolio && portfolio && portfolio.length > 0 ? `<a href="#portfolio" class="hover:opacity-80 transition-opacity">Portfolio</a>` : ''}
+        ${sections.blog && blog && blog.length > 0 ? `<a href="#blog" class="hover:opacity-80 transition-opacity">Blog</a>` : ''}
+        ${sections.contact ? `<a href="#contact" class="hover:opacity-80 transition-opacity">Contacto</a>` : ''}
       </nav>
 
       <div class="flex items-center space-x-2">
@@ -165,9 +177,10 @@ export const generateStandaloneHtml = (config: BusinessConfig): string => {
     </div>
   </header>
 
-  <!-- Hero Section with Photo Grid -->
+  <!-- Hero Section with Layout Model Specific Architecture -->
   <section id="home" class="relative py-20 md:py-28 overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      ${(config.layoutModel || 'luxury') === 'luxury' ? `
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         <div class="lg:col-span-7 space-y-6 text-left">
           ${aboutBadge ? `
@@ -179,7 +192,7 @@ export const generateStandaloneHtml = (config: BusinessConfig): string => {
           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight" style="color: ${textColor};">
             ${heroHeadline}
           </h1>
-          <p class="text-base sm:text-lg leading-relaxed font-medium" style="color: ${mutedTextColor};">
+          <p class="text-base sm:text-lg leading-relaxed font-serif italic" style="color: ${mutedTextColor};">
             ${heroSubheadline}
           </p>
           <div class="flex flex-col sm:flex-row items-center gap-4 pt-4">
@@ -194,11 +207,63 @@ export const generateStandaloneHtml = (config: BusinessConfig): string => {
         </div>
 
         <div class="lg:col-span-5 relative">
-          <div className="rounded-3xl overflow-hidden shadow-2xl border-4" style="border-color: ${borderColor};">
+          <div class="rounded-3xl overflow-hidden shadow-2xl border-4" style="border-color: ${borderColor};">
             <img src="${heroPhoto}" alt="${name}" class="w-full h-[380px] object-cover rounded-3xl shadow-2xl" />
           </div>
         </div>
       </div>
+      ` : config.layoutModel === 'modern' ? `
+      <div class="text-center max-w-4xl mx-auto space-y-8">
+        ${aboutBadge ? `
+        <span class="inline-flex items-center space-x-2 px-5 py-2 rounded-full text-xs font-black uppercase border" style="background-color: ${palette.primary}20; border-color: ${palette.primary}; color: ${palette.accent};">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          <span>${aboutBadge}</span>
+        </span>
+        ` : ''}
+        <h1 class="text-5xl sm:text-6xl font-black tracking-tight leading-tight" style="color: ${textColor};">
+          ${heroHeadline}
+        </h1>
+        <p class="text-lg opacity-85 leading-relaxed font-normal max-w-2xl mx-auto" style="color: ${mutedTextColor};">
+          ${heroSubheadline}
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+          <a href="#contact" class="w-full sm:w-auto px-9 py-4 rounded-2xl text-white text-sm font-black custom-gradient-btn shadow-2xl text-center">
+            ${ctaText} &rarr;
+          </a>
+        </div>
+      </div>
+      ` : config.layoutModel === 'minimal' ? `
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center text-left">
+        <div class="space-y-6">
+          <span class="text-xs font-black uppercase tracking-widest block" style="color: ${palette.primary};">${aboutBadge || 'Estudio Profesional'}</span>
+          <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight" style="color: ${textColor};">${heroHeadline}</h1>
+          <p class="text-base opacity-80 leading-relaxed italic" style="color: ${mutedTextColor};">"${heroSubheadline}"</p>
+          <a href="#contact" class="inline-block px-8 py-3.5 rounded-xl text-white text-xs font-bold uppercase tracking-wider custom-gradient-btn shadow-md">${ctaText} &rarr;</a>
+        </div>
+        <div class="rounded-2xl overflow-hidden shadow-xl border" style="border-color: ${borderColor};">
+          <img src="${heroPhoto}" alt="${name}" class="w-full h-[400px] object-cover" />
+        </div>
+      </div>
+      ` : `
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center text-left">
+        <div class="lg:col-span-7 space-y-6">
+          <span class="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full text-xs font-black border" style="background-color: ${palette.primary}18; border-color: ${palette.primary}40; color: ${palette.primary};">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+            <span>Reserva Directa sin Esperas</span>
+          </span>
+          <h1 class="text-4xl sm:text-5xl font-black tracking-tight leading-tight">${heroHeadline}</h1>
+          <p class="text-base opacity-85 leading-relaxed">${heroSubheadline}</p>
+        </div>
+        <div class="lg:col-span-5">
+          <form class="p-8 rounded-3xl card-custom shadow-2xl space-y-4" onsubmit="event.preventDefault(); alert('¡Solicitud enviada!');">
+            <h3 class="font-extrabold text-base">Solicitar Cita / Información</h3>
+            <input type="text" required placeholder="Tu nombre..." class="w-full px-3.5 py-2.5 rounded-xl border bg-transparent text-xs" style="border-color: ${borderColor};" />
+            <input type="text" required placeholder="+34 600 000 000" class="w-full px-3.5 py-2.5 rounded-xl border bg-transparent text-xs" style="border-color: ${borderColor};" />
+            <button type="submit" class="w-full py-3.5 rounded-xl text-white text-xs font-black uppercase tracking-wider custom-gradient-btn shadow-lg">${ctaText} &rarr;</button>
+          </form>
+        </div>
+      </div>
+      `}
     </div>
   </section>
 
@@ -208,13 +273,13 @@ export const generateStandaloneHtml = (config: BusinessConfig): string => {
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         ${benefits.map(b => `
-        <div class="p-6 rounded-3xl card-custom flex items-start space-x-4">
+        <div class="p-6 rounded-3xl card-custom flex items-start space-x-4 shadow-sm">
           <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white shrink-0 custom-gradient-btn">
             <i data-lucide="shield-check"></i>
           </div>
           <div>
             <h3 class="font-extrabold text-base mb-1">${b.title}</h3>
-            <p class="text-xs opacity-75">${b.description}</p>
+            <p class="text-xs opacity-75 leading-relaxed">${b.description}</p>
           </div>
         </div>
         `).join('')}
@@ -228,8 +293,8 @@ export const generateStandaloneHtml = (config: BusinessConfig): string => {
   <section id="services" class="py-20 border-t" style="border-color: ${borderColor};">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center max-w-2xl mx-auto mb-16">
-        <h2 class="text-3xl font-extrabold mb-3">Servicios & Soluciones Especializadas</h2>
-        <p style="color: ${mutedTextColor};">Servicios profesionales ejecutados con tecnología avanzada y la máxima garantía de calidad.</p>
+        <h2 class="text-3xl font-extrabold mb-3">${config.industry === 'restaurant' ? 'Carta & Especialidades de Autor' : 'Servicios & Soluciones Especializadas'}</h2>
+        <p style="color: ${mutedTextColor};">${config.industry === 'restaurant' ? 'Platos elaborados al momento con producto fresco de lonja e ingredientes de proximidad.' : 'Servicios profesionales ejecutados con tecnología avanzada y la máxima garantía de calidad.'}</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         ${services.map(s => `
@@ -244,7 +309,7 @@ export const generateStandaloneHtml = (config: BusinessConfig): string => {
           </div>
           <div class="p-6 pt-0 flex items-center justify-between border-t" style="border-color: ${borderColor};">
             <span class="text-lg font-black" style="color: ${palette.accent};">${s.price}</span>
-            <a href="#contact" class="text-xs font-extrabold hover:underline" style="color: ${palette.primary};">Reservar &rarr;</a>
+            <a href="#contact" class="text-xs font-extrabold hover:underline" style="color: ${palette.primary};">${config.industry === 'restaurant' ? 'Reservar Mesa &rarr;' : 'Reservar Cita &rarr;'}</a>
           </div>
         </div>
         `).join('')}
@@ -252,6 +317,74 @@ export const generateStandaloneHtml = (config: BusinessConfig): string => {
     </div>
   </section>
   ` : ''}
+
+  <!-- Restaurant Specialized Table Reservation Module -->
+  ${config.industry === 'restaurant' ? `
+  <section class="py-16 border-t" style="border-color: ${borderColor}; background-color: ${cardBgColor}90;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+      <span class="text-xs font-extrabold uppercase tracking-wider block" style="color: ${palette.primary};">Reserva Directa</span>
+      <h2 class="text-3xl font-extrabold">Reserva tu Mesa Online en 1 Clic</h2>
+      <form class="p-8 rounded-3xl card-custom shadow-xl text-left space-y-4" onsubmit="event.preventDefault(); alert('¡Reserva de Mesa Confirmada! Le enviaremos un SMS de confirmación.');">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-bold mb-1">📅 Fecha</label>
+            <input type="date" required class="w-full px-3 py-2.5 rounded-xl border bg-transparent text-xs focus:outline-none" style="border-color: ${borderColor}; text-color: ${textColor};" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">🕒 Turno</label>
+            <select class="w-full px-3 py-2.5 rounded-xl border bg-transparent text-xs font-bold focus:outline-none" style="border-color: ${borderColor}; color: ${textColor};">
+              <option value="14:00" style="color:#000;">14:00 h (Comida)</option>
+              <option value="14:30" style="color:#000;">14:30 h (Comida)</option>
+              <option value="21:00" style="color:#000;">21:00 h (Cena)</option>
+              <option value="21:30" style="color:#000;">21:30 h (Cena)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">👥 Comensales</label>
+            <select class="w-full px-3 py-2.5 rounded-xl border bg-transparent text-xs font-bold focus:outline-none" style="border-color: ${borderColor}; color: ${textColor};">
+              <option value="2" style="color:#000;">2 Personas</option>
+              <option value="4" style="color:#000;">4 Personas</option>
+              <option value="6" style="color:#000;">6+ Personas</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="w-full py-4 rounded-xl text-white font-extrabold text-xs uppercase tracking-wider custom-gradient-btn shadow-lg">
+          Confirmar Reserva de Mesa
+        </button>
+      </form>
+    </div>
+  </section>
+  ` : ''}
+
+  <!-- Methodology Section (4 Pasos) -->
+  <section class="py-16 border-t" style="border-color: ${borderColor}; background-color: ${cardBgColor}80;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <span class="text-xs font-extrabold uppercase tracking-wider block mb-2" style="color: ${palette.primary};">Proceso Garantizado</span>
+      <h2 class="text-3xl font-extrabold mb-12">Cómo Trabajamos Con Nuestros Clientes</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+        <div class="p-6 rounded-3xl card-custom">
+          <span class="text-2xl font-black block mb-2" style="color: ${palette.accent};">01.</span>
+          <h3 class="font-extrabold text-base mb-1">Diagnóstico & Cita</h3>
+          <p class="text-xs opacity-75 leading-relaxed">Evaluación gratuita sin compromiso para analizar tu caso en detalle.</p>
+        </div>
+        <div class="p-6 rounded-3xl card-custom">
+          <span class="text-2xl font-black block mb-2" style="color: ${palette.accent};">02.</span>
+          <h3 class="font-extrabold text-base mb-1">Plan Personalizado</h3>
+          <p class="text-xs opacity-75 leading-relaxed">Propuesta transparente con calendario y presupuesto cerrado por escrito.</p>
+        </div>
+        <div class="p-6 rounded-3xl card-custom">
+          <span class="text-2xl font-black block mb-2" style="color: ${palette.accent};">03.</span>
+          <h3 class="font-extrabold text-base mb-1">Ejecución de Precisión</h3>
+          <p class="text-xs opacity-75 leading-relaxed">Tratamiento o servicio ejecutado por profesionales titulados senior.</p>
+        </div>
+        <div class="p-6 rounded-3xl card-custom">
+          <span class="text-2xl font-black block mb-2" style="color: ${palette.accent};">04.</span>
+          <h3 class="font-extrabold text-base mb-1">Seguimiento & Garantía</h3>
+          <p class="text-xs opacity-75 leading-relaxed">Garantía post-servicio e informe detallado de mantenimiento.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- About Section -->
   ${sections.about ? `
@@ -413,14 +546,14 @@ export const generateStandaloneHtml = (config: BusinessConfig): string => {
   </footer>
 
   <!-- Floating WhatsApp Widget -->
-  <a href="https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}" target="_blank" class="fixed bottom-6 right-6 z-50 w-14 h-14 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-2xl transition-all transform hover:scale-110">
+  <a href="https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}" target="_blank" class="fixed bottom-6 right-6 z-50 w-14 h-14 text-white rounded-full flex items-center justify-center shadow-2xl transition-all transform hover:scale-110 custom-gradient-btn">
     <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
   </a>
 
   <!-- Floating Cookie Consent Notice -->
   <div id="cookie-banner" class="fixed bottom-16 md:bottom-6 left-4 right-4 md:left-auto md:right-6 md:max-w-md z-50 p-4 rounded-2xl shadow-2xl border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs backdrop-blur-xl" style="background-color: ${cardBgColor}f0; border-color: ${borderColor}; color: ${textColor};">
     <div class="flex items-center space-x-2">
-      <i data-lucide="shield-check" class="w-5 h-5 text-sky-400 shrink-0"></i>
+      <i data-lucide="shield-check" class="w-5 h-5 shrink-0" style="color: ${palette.primary};"></i>
       <span class="opacity-85">Utilizamos cookies esenciales para garantizar el correcto funcionamiento del sitio.</span>
     </div>
     <button onclick="document.getElementById('cookie-banner').style.display='none';" class="w-full sm:w-auto px-4 py-2 rounded-xl text-white font-extrabold custom-gradient-btn shrink-0 shadow-md">
@@ -431,7 +564,7 @@ export const generateStandaloneHtml = (config: BusinessConfig): string => {
   <!-- Sticky Bottom Action Bar for Mobile -->
   <div class="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t backdrop-blur-md p-3 px-4 flex items-center space-x-3 shadow-2xl" style="background-color: ${cardBgColor}ee; border-color: ${borderColor};">
     <a href="tel:${phone.replace(/[^0-9+]/g, '')}" class="flex-1 py-3 rounded-2xl text-xs font-extrabold border flex items-center justify-center space-x-2 text-center" style="border-color: ${borderColor}; color: ${textColor};">
-      <i data-lucide="phone" class="w-4 h-4 text-sky-400"></i>
+      <i data-lucide="phone" class="w-4 h-4" style="color: ${palette.primary};"></i>
       <span>Llamar Directo</span>
     </a>
     <a href="https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}" target="_blank" class="flex-1 py-3 rounded-2xl text-white text-xs font-extrabold custom-gradient-btn flex items-center justify-center space-x-2 text-center">
