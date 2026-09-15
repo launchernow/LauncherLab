@@ -62,8 +62,32 @@ export const generateStandaloneHtml = (config: BusinessConfig): string => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${name} | ${slogan}</title>
-  <meta name="description" content="${heroSubheadline.replace(/"/g, '&quot;')}">
+  <!-- SEO & OpenGraph Meta Tags -->
+  <meta property="og:title" content="${name} | ${slogan}">
+  <meta property="og:description" content="${heroSubheadline.replace(/"/g, '&quot;')}">
+  <meta property="og:image" content="${heroPhoto}">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${name} | ${slogan}">
+  <meta name="twitter:description" content="${heroSubheadline.replace(/"/g, '&quot;')}">
+  <meta name="twitter:image" content="${heroPhoto}">
+
+  <!-- Schema.org JSON-LD Structured Data for LocalBusiness -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "${name}",
+    "description": "${heroSubheadline.replace(/"/g, '&quot;')}",
+    "telephone": "${phone}",
+    "email": "${email}",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "${address}"
+    },
+    "openingHours": "${workingHours}"
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?${fontGoogleUrl}&display=swap" rel="stylesheet">
@@ -95,7 +119,7 @@ export const generateStandaloneHtml = (config: BusinessConfig): string => {
     }
   </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col">
+<body class="antialiased min-h-screen flex flex-col pb-16 md:pb-0">
 
   <!-- Header Navigation -->
   <header class="sticky top-0 z-50 backdrop-blur-md border-b" style="background-color: ${cardBgColor}ee; border-color: ${borderColor};">
@@ -119,10 +143,25 @@ export const generateStandaloneHtml = (config: BusinessConfig): string => {
         ${sections.contact ? `<a href="#contact" class="hover:text-sky-400">Contacto</a>` : ''}
       </nav>
 
-      <a href="https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}" target="_blank" class="hidden sm:inline-flex items-center space-x-2 px-5 py-2.5 rounded-full text-white text-xs font-extrabold custom-gradient-btn shadow-lg">
-        <i data-lucide="message-square"></i>
-        <span>Contacto Directo</span>
-      </a>
+      <div class="flex items-center space-x-2">
+        <a href="https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}" target="_blank" class="hidden sm:inline-flex items-center space-x-2 px-5 py-2.5 rounded-full text-white text-xs font-extrabold custom-gradient-btn shadow-lg">
+          <i data-lucide="message-square"></i>
+          <span>Contacto Directo</span>
+        </a>
+        <button id="mobile-menu-btn" class="md:hidden p-2.5 rounded-2xl border" style="border-color: ${borderColor}; color: ${textColor};" aria-label="Abrir Menú">
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden border-t px-6 py-4 space-y-3" style="border-color: ${borderColor}; background-color: ${cardBgColor};">
+      <a href="#home" class="block py-2 text-sm font-extrabold" style="color: ${textColor};" onclick="document.getElementById('mobile-menu').classList.add('hidden');">Inicio</a>
+      ${sections.services ? `<a href="#services" class="block py-2 text-sm font-extrabold" style="color: ${textColor};" onclick="document.getElementById('mobile-menu').classList.add('hidden');">Servicios</a>` : ''}
+      ${sections.about ? `<a href="#about" class="block py-2 text-sm font-extrabold" style="color: ${textColor};" onclick="document.getElementById('mobile-menu').classList.add('hidden');">Nosotros</a>` : ''}
+      ${sections.portfolio && portfolio && portfolio.length > 0 ? `<a href="#portfolio" class="block py-2 text-sm font-extrabold" style="color: ${textColor};" onclick="document.getElementById('mobile-menu').classList.add('hidden');">Portfolio</a>` : ''}
+      ${sections.blog && blog && blog.length > 0 ? `<a href="#blog" class="block py-2 text-sm font-extrabold" style="color: ${textColor};" onclick="document.getElementById('mobile-menu').classList.add('hidden');">Blog</a>` : ''}
+      ${sections.contact ? `<a href="#contact" class="block py-2 text-sm font-extrabold" style="color: ${textColor};" onclick="document.getElementById('mobile-menu').classList.add('hidden');">Contacto</a>` : ''}
     </div>
   </header>
 
@@ -378,8 +417,38 @@ export const generateStandaloneHtml = (config: BusinessConfig): string => {
     <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
   </a>
 
+  <!-- Floating Cookie Consent Notice -->
+  <div id="cookie-banner" class="fixed bottom-16 md:bottom-6 left-4 right-4 md:left-auto md:right-6 md:max-w-md z-50 p-4 rounded-2xl shadow-2xl border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs backdrop-blur-xl" style="background-color: ${cardBgColor}f0; border-color: ${borderColor}; color: ${textColor};">
+    <div class="flex items-center space-x-2">
+      <i data-lucide="shield-check" class="w-5 h-5 text-sky-400 shrink-0"></i>
+      <span class="opacity-85">Utilizamos cookies esenciales para garantizar el correcto funcionamiento del sitio.</span>
+    </div>
+    <button onclick="document.getElementById('cookie-banner').style.display='none';" class="w-full sm:w-auto px-4 py-2 rounded-xl text-white font-extrabold custom-gradient-btn shrink-0 shadow-md">
+      Entendido
+    </button>
+  </div>
+
+  <!-- Sticky Bottom Action Bar for Mobile -->
+  <div class="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t backdrop-blur-md p-3 px-4 flex items-center space-x-3 shadow-2xl" style="background-color: ${cardBgColor}ee; border-color: ${borderColor};">
+    <a href="tel:${phone.replace(/[^0-9+]/g, '')}" class="flex-1 py-3 rounded-2xl text-xs font-extrabold border flex items-center justify-center space-x-2 text-center" style="border-color: ${borderColor}; color: ${textColor};">
+      <i data-lucide="phone" class="w-4 h-4 text-sky-400"></i>
+      <span>Llamar Directo</span>
+    </a>
+    <a href="https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}" target="_blank" class="flex-1 py-3 rounded-2xl text-white text-xs font-extrabold custom-gradient-btn flex items-center justify-center space-x-2 text-center">
+      <i data-lucide="message-square" class="w-4 h-4"></i>
+      <span>WhatsApp</span>
+    </a>
+  </div>
+
   <script>
     lucide.createIcons();
+    const btn = document.getElementById('mobile-menu-btn');
+    const menu = document.getElementById('mobile-menu');
+    if (btn && menu) {
+      btn.addEventListener('click', function() {
+        menu.classList.toggle('hidden');
+      });
+    }
   </script>
 </body>
 </html>`;

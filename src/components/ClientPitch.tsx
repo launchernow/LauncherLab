@@ -27,6 +27,16 @@ export const ClientPitch: React.FC<ClientPitchProps> = ({
     });
   };
 
+  const toggleSection = (sectionKey: keyof BusinessConfig['sections']) => {
+    onChange({
+      ...config,
+      sections: {
+        ...config.sections,
+        [sectionKey]: !config.sections[sectionKey]
+      }
+    });
+  };
+
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col font-inter">
       
@@ -86,81 +96,115 @@ export const ClientPitch: React.FC<ClientPitchProps> = ({
       {/* Floating Live Tweaker Drawer */}
       {showTweaker && (
         <div className="bg-white/95 backdrop-blur-md border-b border-slate-200 p-4 sticky top-28 z-40 shadow-md animate-fadeIn">
-          <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-4 gap-4 items-center">
-            <div>
-              <label className="block text-[11px] font-bold text-slate-600 mb-1">Color Primario</label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="color"
-                  value={config.palette.primary}
-                  onChange={(e) => updatePalette('primary', e.target.value)}
-                  className="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-0"
-                />
-                <span className="text-xs font-mono font-bold text-slate-800">{config.palette.primary}</span>
+          <div className="max-w-5xl mx-auto space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 items-center">
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 mb-1">Color Primario</label>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="color"
+                    value={config.palette.primary}
+                    onChange={(e) => updatePalette('primary', e.target.value)}
+                    className="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-0"
+                  />
+                  <span className="text-xs font-mono font-bold text-slate-800">{config.palette.primary}</span>
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-slate-600 mb-1">Color de Acento</label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="color"
-                  value={config.palette.accent}
-                  onChange={(e) => updatePalette('accent', e.target.value)}
-                  className="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-0"
-                />
-                <span className="text-xs font-mono font-bold text-slate-800">{config.palette.accent}</span>
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 mb-1">Color de Acento</label>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="color"
+                    value={config.palette.accent}
+                    onChange={(e) => updatePalette('accent', e.target.value)}
+                    className="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-0"
+                  />
+                  <span className="text-xs font-mono font-bold text-slate-800">{config.palette.accent}</span>
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-slate-600 mb-1">Modo de Fondo</label>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => updatePalette('bgMode', 'dark')}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold border ${
-                    config.palette.bgMode === 'dark' ? 'bg-slate-900 text-white border-slate-900' : 'bg-slate-100 text-slate-600 border-slate-200'
-                  }`}
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 mb-1">Modo de Fondo</label>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => updatePalette('bgMode', 'dark')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold border ${
+                      config.palette.bgMode === 'dark' ? 'bg-slate-900 text-white border-slate-900' : 'bg-slate-100 text-slate-600 border-slate-200'
+                    }`}
+                  >
+                    🌙 Oscuro
+                  </button>
+                  <button
+                    onClick={() => updatePalette('bgMode', 'light')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold border ${
+                      config.palette.bgMode === 'light' ? 'bg-white text-slate-900 border-sky-500 shadow-xs' : 'bg-slate-100 text-slate-600 border-slate-200'
+                    }`}
+                  >
+                    ☀️ Claro
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 mb-1">Modelo de Estructura</label>
+                <select
+                  value={config.layoutModel || 'luxury'}
+                  onChange={(e) => onChange({ ...config, layoutModel: e.target.value as LayoutModel })}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-900 font-bold"
                 >
-                  🌙 Oscuro
-                </button>
-                <button
-                  onClick={() => updatePalette('bgMode', 'light')}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold border ${
-                    config.palette.bgMode === 'light' ? 'bg-white text-slate-900 border-sky-500 shadow-xs' : 'bg-slate-100 text-slate-600 border-slate-200'
-                  }`}
+                  <option value="luxury">🌟 Studio Luxury</option>
+                  <option value="modern">⚡ Modern Tech & SaaS</option>
+                  <option value="minimal">🌿 Boutique Minimal</option>
+                  <option value="conversion">🚀 Lead Conversion</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 mb-1">Tipografía</label>
+                <select
+                  value={config.fontFamily}
+                  onChange={(e) => onChange({ ...config, fontFamily: e.target.value as FontFamily })}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-900 font-bold"
                 >
-                  ☀️ Claro
-                </button>
+                  <option value="inter">Inter (Neutral)</option>
+                  <option value="jakarta">Plus Jakarta (Modern)</option>
+                  <option value="playfair">Playfair (Serif Lujo)</option>
+                  <option value="space">Space (Tech)</option>
+                </select>
               </div>
             </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-slate-600 mb-1">Modelo de Estructura</label>
-              <select
-                value={config.layoutModel || 'luxury'}
-                onChange={(e) => onChange({ ...config, layoutModel: e.target.value as LayoutModel })}
-                className="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-900 font-bold"
-              >
-                <option value="luxury">🌟 Studio Luxury</option>
-                <option value="modern">⚡ Modern Tech & SaaS</option>
-                <option value="minimal">🌿 Boutique Minimal</option>
-                <option value="conversion">🚀 Lead Conversion</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-bold text-slate-600 mb-1">Tipografía</label>
-              <select
-                value={config.fontFamily}
-                onChange={(e) => onChange({ ...config, fontFamily: e.target.value as FontFamily })}
-                className="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-900 font-bold"
-              >
-                <option value="inter">Inter (Neutral)</option>
-                <option value="jakarta">Plus Jakarta (Modern)</option>
-                <option value="playfair">Playfair (Serif Lujo)</option>
-                <option value="space">Space (Tech)</option>
-              </select>
+            {/* Dynamic Section Visibility Toggles */}
+            <div className="border-t border-slate-200/80 pt-2.5 flex items-center justify-between flex-wrap gap-2">
+              <span className="text-[11px] font-bold text-slate-600">🧩 Activar / Ocultar Secciones:</span>
+              <div className="flex flex-wrap items-center gap-1.5">
+                {[
+                  { key: 'services', label: '💼 Servicios' },
+                  { key: 'portfolio', label: '🖼️ Portfolio' },
+                  { key: 'blog', label: '📰 Blog' },
+                  { key: 'about', label: '🏢 Nosotros' },
+                  { key: 'testimonials', label: '⭐ Reseñas' },
+                  { key: 'team', label: '👥 Equipo' },
+                  { key: 'faq', label: '❓ Preguntas' },
+                  { key: 'contact', label: '📞 Contacto' }
+                ].map((sec) => {
+                  const isEnabled = config.sections[sec.key as keyof BusinessConfig['sections']];
+                  return (
+                    <button
+                      key={sec.key}
+                      onClick={() => toggleSection(sec.key as keyof BusinessConfig['sections'])}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold border transition-all ${
+                        isEnabled
+                          ? 'bg-sky-50 border-sky-500 text-sky-700 shadow-xs'
+                          : 'bg-slate-100 border-slate-200 text-slate-400 line-through opacity-70'
+                      }`}
+                    >
+                      {sec.label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
