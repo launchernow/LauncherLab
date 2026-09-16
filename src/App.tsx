@@ -49,7 +49,7 @@ export function App() {
           setIsReady(false);
 
           fetchLeadPrototype(leadId).then((assets) => {
-            if (assets?.config) {
+            if (assets?.config && Object.keys(assets.config).length > 5) {
               setConfig(assets.config);
             } else if (assets && ((assets.photos && assets.photos.length > 0) || (assets.reviews && assets.reviews.length > 0))) {
               setConfig(applyRealAssetsToConfig(parsed.config, assets));

@@ -254,21 +254,32 @@ export interface PrototypeAssetData {
  * Consulta la configuración completa y los activos persistidos en el CRM / Supabase
  */
 export async function fetchLeadPrototype(leadId: string): Promise<PrototypeAssetData | null> {
-  try {
-    const crmUrl = localStorage.getItem('crm_api_url') || 'http://localhost:8765';
-    const resp = await fetch(`${crmUrl}/api/prototypes/${leadId}`);
-    if (!resp.ok) return null;
-    const data = await resp.json();
-    if (data.ok && data.prototype) {
-      return {
-        photos: data.prototype.photos || [],
-        reviews: data.prototype.reviews || [],
-        config: data.prototype.config || undefined,
-      };
+  const customUrl = localStorage.getItem('crm_api_url');
+  const candidateUrls = customUrl ? [customUrl] : ['http://localhost:8765', 'http://127.0.0.1:8765'];
+
+  for (const baseUrl of candidateUrls) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 35000);
+      const resp = await fetch(`${baseUrl}/api/prototypes/${leadId}`, {
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
+      if (!resp.ok) continue;
+      const data = await resp.json();
+      if (data.ok && data.prototype) {
+        return {
+          photos: data.prototype.photos || [],
+          reviews: data.prototype.reviews || [],
+          config: data.prototype.config || undefined,
+        };
+      }
+    } catch (err) {
+      console.warn(`Intento de conexión a ${baseUrl} fallido:`, err);
     }
-  } catch (err) {
-    console.warn('No se pudo conectar con el endpoint de prototipos del CRM:', err);
   }
+
   return null;
 }
 

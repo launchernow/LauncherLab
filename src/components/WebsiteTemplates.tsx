@@ -281,15 +281,15 @@ export const WebsiteTemplates: React.FC<WebsiteTemplatesProps> = ({ config }) =>
                     <div className="lg:col-span-5 relative">
                       <div className="relative mx-auto max-w-md lg:max-w-none">
                         <div className="rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-900/10 transform rotate-1 hover:rotate-0 transition-transform duration-500">
-                          <img src={heroImage} alt={name} className="w-full h-[400px] object-cover" />
+                          <img src={heroImage} alt={name} referrerPolicy="no-referrer" className="w-full h-[400px] object-cover" />
                         </div>
                         <div className={`absolute -bottom-6 -left-6 p-4 rounded-2xl border shadow-2xl max-w-xs flex items-center space-x-3 backdrop-blur-xl ${isDark ? 'bg-slate-900/90 border-slate-800 text-white' : 'bg-white/90 border-slate-200 text-slate-900'}`}>
                           <div className="w-12 h-12 rounded-xl bg-sky-500/20 border border-sky-400/30 flex items-center justify-center text-sky-400 shrink-0">
-                            <Award className="w-6 h-6" />
+                            <ShieldCheck className="w-6 h-6" />
                           </div>
                           <div>
-                            <div className="font-extrabold text-sm">+1.200 Casos Exitosos</div>
-                            <div className="text-[11px] opacity-70 font-medium">Atención profesional de alta gama</div>
+                            <div className="font-extrabold text-sm">Atención Personalizada</div>
+                            <div className="text-[11px] opacity-70 font-medium">{address ? address.split(',')[0] : 'Presupuestos transparentes sin compromiso'}</div>
                           </div>
                         </div>
                       </div>
@@ -297,7 +297,7 @@ export const WebsiteTemplates: React.FC<WebsiteTemplatesProps> = ({ config }) =>
                   </div>
                 )}
 
-                {/* MODEL 2: MODERN TECH & SAAS (Centered hero + metric counters + photo hero) */}
+                {/* MODEL 2: MODERN TECH & SAAS (Centered hero + value pillars + photo hero) */}
                 {config.layoutModel === 'modern' && (
                   <div className="text-center max-w-4xl mx-auto space-y-8">
                     {aboutBadge && (
@@ -325,23 +325,30 @@ export const WebsiteTemplates: React.FC<WebsiteTemplatesProps> = ({ config }) =>
                       )}
                     </div>
 
-                    {/* Metric Counter Bar */}
+                    {/* Business Real Image Showcase */}
+                    {heroImage && (
+                      <div className="mt-8 rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-900/10 max-w-3xl mx-auto max-h-[380px]">
+                        <img src={heroImage} alt={name} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
+                      </div>
+                    )}
+
+                    {/* Honest Value Pillars (sin porcentajes ni cifras inventadas) */}
                     <div className={`mt-12 p-6 rounded-3xl border grid grid-cols-2 md:grid-cols-4 gap-6 backdrop-blur-xl ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200'}`}>
                       <div>
-                        <div className="text-3xl font-black" style={{ color: palette.accent }}>99.4%</div>
-                        <div className="text-xs opacity-70 font-bold uppercase mt-1">Tasa de Éxito</div>
+                        <div className="text-lg font-black" style={{ color: palette.accent }}>Opiniones Reales</div>
+                        <div className="text-xs opacity-70 font-semibold mt-1">Verificadas en Google</div>
                       </div>
                       <div>
-                        <div className="text-3xl font-black" style={{ color: palette.accent }}>+1.400</div>
-                        <div className="text-xs opacity-70 font-bold uppercase mt-1">Clientes Satisfechos</div>
+                        <div className="text-lg font-black" style={{ color: palette.accent }}>Trato Directo</div>
+                        <div className="text-xs opacity-70 font-semibold mt-1">Sin intermediarios</div>
                       </div>
                       <div>
-                        <div className="text-3xl font-black" style={{ color: palette.accent }}>24/7</div>
-                        <div className="text-xs opacity-70 font-bold uppercase mt-1">Soporte Continuo</div>
+                        <div className="text-lg font-black" style={{ color: palette.accent }}>Presupuesto Claro</div>
+                        <div className="text-xs opacity-70 font-semibold mt-1">Cerrado por escrito</div>
                       </div>
                       <div>
-                        <div className="text-3xl font-black" style={{ color: palette.accent }}>10 Años</div>
-                        <div className="text-xs opacity-70 font-bold uppercase mt-1">Garantía Escrita</div>
+                        <div className="text-lg font-black" style={{ color: palette.accent }}>Atención Cercana</div>
+                        <div className="text-xs opacity-70 font-semibold mt-1">Cita previa y seguimiento</div>
                       </div>
                     </div>
                   </div>
@@ -370,7 +377,7 @@ export const WebsiteTemplates: React.FC<WebsiteTemplatesProps> = ({ config }) =>
                     </div>
 
                     <div className="rounded-2xl overflow-hidden shadow-xl border border-slate-800/40">
-                      <img src={heroImage} alt={name} className="w-full h-[420px] object-cover" />
+                      <img src={heroImage} alt={name} referrerPolicy="no-referrer" className="w-full h-[420px] object-cover" />
                     </div>
                   </div>
                 )}
@@ -474,7 +481,7 @@ export const WebsiteTemplates: React.FC<WebsiteTemplatesProps> = ({ config }) =>
                         {/* Service Photo */}
                         {s.imageUrl && (
                           <div className="relative h-48 overflow-hidden">
-                            <img src={s.imageUrl} alt={s.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            <img src={s.imageUrl} alt={s.title} referrerPolicy="no-referrer" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                             {s.badge && (
                               <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase text-white shadow-md" style={{ background: palette.primary }}>
                                 {s.badge}
@@ -559,7 +566,13 @@ export const WebsiteTemplates: React.FC<WebsiteTemplatesProps> = ({ config }) =>
                       </div>
                       <p className="text-sm sm:text-base italic mb-6 leading-relaxed opacity-90">"{tItem.comment}"</p>
                       <div className="flex items-center space-x-4">
-                        <img src={tItem.avatar} alt={tItem.name} className="w-12 h-12 rounded-full object-cover border-2" style={{ borderColor: palette.primary }} />
+                        {tItem.avatar && tItem.avatar.includes('googleusercontent.com') ? (
+                          <img src={tItem.avatar} alt={tItem.name} referrerPolicy="no-referrer" className="w-12 h-12 rounded-full object-cover border-2" style={{ borderColor: palette.primary }} />
+                        ) : (
+                          <div className="w-12 h-12 rounded-full flex items-center justify-center font-black text-base text-white shadow-sm shrink-0" style={{ background: `linear-gradient(135deg, ${palette.primary}, ${palette.accent})` }}>
+                            {(tItem.name || 'C').trim().charAt(0).toUpperCase()}
+                          </div>
+                        )}
                         <div>
                           <div className="font-extrabold text-sm">{tItem.name}</div>
                           <div className="text-xs opacity-60 font-semibold">{tItem.role}</div>
@@ -616,7 +629,7 @@ export const WebsiteTemplates: React.FC<WebsiteTemplatesProps> = ({ config }) =>
                 
                 {/* Service Photo */}
                 <div className="lg:col-span-4 rounded-2xl overflow-hidden shadow-md h-56">
-                  <img src={service.imageUrl || heroImage} alt={service.title} className="w-full h-full object-cover" />
+                  <img src={service.imageUrl || heroImage} alt={service.title} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                 </div>
 
                 {/* Service Details */}
@@ -686,7 +699,7 @@ export const WebsiteTemplates: React.FC<WebsiteTemplatesProps> = ({ config }) =>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {team.map((member) => (
                   <div key={member.id} className={`p-8 rounded-3xl border text-center shadow-lg ${isDark ? 'bg-slate-900/70 border-slate-800' : 'bg-white border-slate-200'}`}>
-                    <img src={member.imageUrl} alt={member.name} className="w-28 h-28 rounded-full mx-auto object-cover mb-4 border-4 shadow-md" style={{ borderColor: palette.primary }} />
+                    <img src={member.imageUrl} alt={member.name} referrerPolicy="no-referrer" className="w-28 h-28 rounded-full mx-auto object-cover mb-4 border-4 shadow-md" style={{ borderColor: palette.primary }} />
                     <h3 className="font-extrabold text-lg">{member.name}</h3>
                     <span className="text-xs opacity-70 font-bold uppercase tracking-wider block mb-3 text-sky-400">{member.role}</span>
                     {member.bio && <p className="text-xs opacity-75 leading-relaxed">{member.bio}</p>}
@@ -711,7 +724,7 @@ export const WebsiteTemplates: React.FC<WebsiteTemplatesProps> = ({ config }) =>
             {portfolio?.map((project) => (
               <div key={project.id} className={`rounded-3xl overflow-hidden border ${isDark ? 'bg-slate-900/70 border-slate-800' : 'bg-white border-slate-200'} shadow-xl group`}>
                 <div className="h-64 overflow-hidden relative">
-                  <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src={project.imageUrl} alt={project.title} referrerPolicy="no-referrer" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <span className="absolute top-4 left-4 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase bg-slate-900/90 text-white backdrop-blur-md">
                     {project.category}
                   </span>
@@ -745,7 +758,7 @@ export const WebsiteTemplates: React.FC<WebsiteTemplatesProps> = ({ config }) =>
             {blog?.map((article) => (
               <article key={article.id} className={`rounded-3xl border overflow-hidden ${isDark ? 'bg-slate-900/70 border-slate-800' : 'bg-white border-slate-200'} shadow-xl flex flex-col justify-between`}>
                 <div>
-                  <img src={article.imageUrl} alt={article.title} className="w-full h-52 object-cover" />
+                  <img src={article.imageUrl} alt={article.title} referrerPolicy="no-referrer" className="w-full h-52 object-cover" />
                   <div className="p-8">
                     <span className="text-xs font-extrabold text-sky-400 block mb-2">{article.date} • {article.category} • {article.readTime}</span>
                     <h2 className="text-2xl font-extrabold mb-3">{article.title}</h2>
@@ -859,7 +872,7 @@ export const WebsiteTemplates: React.FC<WebsiteTemplatesProps> = ({ config }) =>
             <button onClick={() => setSelectedArticle(null)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1"><X className="w-5 h-5" /></button>
             <span className="text-xs font-extrabold text-sky-400 block mb-2">{selectedArticle.date} • {selectedArticle.category}</span>
             <h2 className="text-2xl font-extrabold mb-4">{selectedArticle.title}</h2>
-            <img src={selectedArticle.imageUrl} alt={selectedArticle.title} className="w-full h-64 object-cover rounded-2xl mb-6" />
+            <img src={selectedArticle.imageUrl} alt={selectedArticle.title} referrerPolicy="no-referrer" className="w-full h-64 object-cover rounded-2xl mb-6" />
             <p className="text-xs sm:text-sm opacity-90 leading-relaxed whitespace-pre-line">{selectedArticle.content}</p>
           </div>
         </div>
