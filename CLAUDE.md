@@ -22,7 +22,9 @@ npm run preview # previsualizar build local
 - `src/types/business.ts`: Modelo de datos principal (`BusinessConfig`, sectores, paletas, servicios, testimonios, secciones).
 - `src/data/industryPresets.ts`: Presets y configuraciones por defecto según el sector (restaurante, dental, gym, tech, etc.).
 - `src/utils/aiGenerator.ts`: Generador heurístico/mock de contenido web según prompt del usuario (actualmente basado en presets + fotos de Unsplash).
+- `src/utils/leadImporter.ts`: Importador de leads del CRM y conexión con el endpoint de prototipos reales de Supabase.
 - `src/utils/htmlExporter.ts`: Generador de HTML standalone listo para producción y empaquetador ZIP (`index.html` + `config.json`).
+- `src/components/GenerationLoader.tsx`: Pantalla de carga animada con progreso por pasos para la extracción de Google Maps y síntesis de la propuesta.
 - `src/components/FormWizard.tsx`: Wizard paso a paso para configurar la web.
 - `src/components/ClientPitch.tsx`: Vista de presentación / mockup interactivo para el cliente.
 - `src/components/WebsiteTemplates.tsx`: Renderizado reactivo de la plantilla web en vivo según la configuración.

@@ -7,7 +7,7 @@ import { INDUSTRY_PRESETS } from '../data/industryPresets';
 export function normalizeCategory(rawCategory: string): IndustryType {
   const cat = (rawCategory || '').toLowerCase().trim();
 
-  if (cat.includes('dent') || cat.includes('dient') || cat.includes('odontolog') || cat.includes('salud')) {
+  if (cat.includes('dent') || cat.includes('dient') || cat.includes('odontolog')) {
     return 'dental';
   }
   if (cat.includes('restaurante') || cat.includes('bar') || cat.includes('cafeter') || cat.includes('gastronom') || cat.includes('pizza') || cat.includes('comida')) {
@@ -33,6 +33,7 @@ export function normalizeCategory(rawCategory: string): IndustryType {
 }
 
 export interface LeadUrlData {
+  id?: string;
   name: string;
   category: string;
   industry: IndustryType;
@@ -45,12 +46,129 @@ export interface LeadUrlData {
 }
 
 /**
+ * Genera una plantilla base neutral para servicios profesionales
+ */
+function createCustomFallbackPreset(leadName: string, category: string): BusinessConfig {
+  const isOptics = /óptic|optic|optom|gafas|lentill/i.test(leadName + ' ' + category);
+
+  return {
+    name: leadName,
+    slogan: isOptics
+      ? 'Cuidado integral de tu visión y últimas tendencias en monturas'
+      : `Servicios profesionales de excelencia en ${category || 'tu sector'}`,
+    industry: 'custom',
+    logoIcon: isOptics ? 'Eye' : 'Sparkles',
+    logoType: 'badge',
+    heroHeadline: isOptics
+      ? `Tu Visión y Salud Ocular en las Mejores Manos`
+      : `Servicios Profesionales de Confianza en ${leadName}`,
+    heroSubheadline: isOptics
+      ? `Graduación precisa con tecnología de última generación, lentes de contacto a medida y una cuidada selección de monturas en ${leadName}.`
+      : `Atención cercana, soluciones especializadas y máxima garantía para particulares y empresas en ${leadName}.`,
+    ctaText: isOptics ? 'Pedir Cita para Graduación' : 'Solicitar Presupuesto',
+    secondaryCtaText: isOptics ? 'Ver Catálogo de Monturas' : 'Conocer Servicios',
+    aboutTitle: 'Compromiso con la Calidad y la Satisfacción',
+    aboutBadge: '⭐️ Compromiso de Calidad 2026',
+    aboutText: `En ${leadName} nos caracterizamos por ofrecer una atención rigurosa, cercana y adaptada a tus necesidades individuales.`,
+    aboutHistory: 'Años de trayectoria consolidada brindando soluciones de alto valor con una atención minuciosa y orientada al detalle.',
+    aboutValues: ['Atención Directa y Personalizada', 'Profesionales Cualificados', 'Garantía de Satisfacción', 'Transparencia Total'],
+    whatsappNumber: '',
+    phone: '',
+    email: 'contacto@negocio.es',
+    address: 'Madrid',
+    workingHours: 'Lun - Vie: 10:00 - 14:00 | 17:00 - 20:30',
+    visualTheme: 'modern-glass',
+    layoutModel: 'modern',
+    fontFamily: 'inter',
+    palette: {
+      primary: isOptics ? '#0284c7' : '#2563eb',
+      secondary: '#0f172a',
+      accent: isOptics ? '#38bdf8' : '#60a5fa',
+      bgMode: 'dark',
+    },
+    language: 'es',
+    paymentMethods: { stripe: true, bizum: true, paypal: false },
+    sections: {
+      hero: true,
+      benefits: true,
+      about: true,
+      services: true,
+      portfolio: true,
+      testimonials: true,
+      team: false,
+      faq: true,
+      contact: true,
+      map: true,
+      legal: true,
+    },
+    currency: '€',
+    benefits: [
+      { id: 'b1', title: 'Atención Individualizada', description: 'Trato directo y soluciones a tu medida desde el primer contacto.', iconName: 'UserCheck' },
+      { id: 'b2', title: 'Tecnología Avanzada', description: 'Equipamiento moderno para diagnósticos y resultados de máxima precisión.', iconName: 'ShieldCheck' },
+      { id: 'b3', title: 'Garantía de Satisfacción', description: 'Compromiso total con la excelencia en cada uno de nuestros trabajos.', iconName: 'Sparkles' },
+    ],
+    services: [
+      {
+        id: 's1',
+        title: isOptics ? 'Graduación y Examen Optométrico' : `Servicio Especializado de ${category || 'Calidad'}`,
+        description: isOptics ? 'Medición de agudeza visual y salud ocular con tecnología digital de alta resolución.' : 'Atención profesional adaptada a tus necesidades con garantía de satisfacción.',
+        price: isOptics ? 'Incluido' : 'A consultar',
+        iconName: isOptics ? 'Eye' : 'Sparkles',
+        badge: 'Destacado',
+        imageUrl: 'https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&w=600&q=80',
+      },
+      {
+        id: 's2',
+        title: isOptics ? 'Monturas de Vanguardia y Sol' : 'Asesoramiento y Diagnóstico Previo',
+        description: isOptics ? 'Selección exclusiva de diseñadores y materiales ultraligeros de alta durabilidad.' : 'Evaluación detallada para proponerte la opción más conveniente sin compromiso.',
+        price: isOptics ? 'Desde 79 €' : 'Gratuito',
+        iconName: isOptics ? 'Sparkles' : 'FileText',
+        imageUrl: 'https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&w=600&q=80',
+      },
+      {
+        id: 's3',
+        title: isOptics ? 'Lentes de Contacto y Orto-K' : 'Seguimiento y Garantía Post-Servicio',
+        description: isOptics ? 'Adaptación personalizada de lentillas blandas, progresivas y tratamientos nocturnos.' : 'Acompañamiento continuado para resolver cualquier duda tras la atención.',
+        price: isOptics ? 'Desde 35 €' : 'Incluido',
+        iconName: isOptics ? 'ShieldCheck' : 'CheckCircle',
+        imageUrl: 'https://images.unsplash.com/photo-1583912267670-6575ad362e4a?auto=format&fit=crop&w=600&q=80',
+      },
+    ],
+    portfolio: [
+      {
+        id: 'p1',
+        title: 'Espacio de Atención Profesional',
+        category: leadName,
+        imageUrl: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1200&q=80',
+        description: `Instalaciones y espacio de atención al cliente de ${leadName}`,
+      },
+    ],
+    testimonials: [
+      {
+        id: 't1',
+        name: 'Cliente Verificado',
+        role: 'Opinión en Google Maps',
+        comment: `Un trato inmejorable en ${leadName}. Son extraordinariamente atentos y profesionales. Muy recomendable.`,
+        rating: 5,
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+      },
+    ],
+    faqs: [
+      { id: 'f1', question: '¿Cómo puedo solicitar una cita o presupuesto?', answer: 'Puedes llamarnos directamente por teléfono o escribirnos un mensaje de WhatsApp para darte respuesta inmediata.' },
+      { id: 'f2', question: '¿Cuál es el horario habitual?', answer: 'Atendemos en nuestro horario comercial continuado de lunes a viernes. Consúltanos para necesidades específicas.' },
+    ],
+    team: [],
+  };
+}
+
+/**
  * Extrae y procesa los datos del lead desde la URL
  */
 export function parseLeadFromUrl(searchParams: URLSearchParams): { config: BusinessConfig; lead: LeadUrlData } | null {
   const leadName = searchParams.get('lead_name') || searchParams.get('name');
   if (!leadName) return null;
 
+  const leadId = searchParams.get('lead_id') || searchParams.get('leadId') || searchParams.get('id') || undefined;
   const rawCategory = searchParams.get('category') || '';
   const industry = normalizeCategory(rawCategory);
   const phone = searchParams.get('phone') || '';
@@ -64,6 +182,7 @@ export function parseLeadFromUrl(searchParams: URLSearchParams): { config: Busin
   const reviewCount = reviewsStr ? parseInt(reviewsStr, 10) : undefined;
 
   const leadData: LeadUrlData = {
+    id: leadId,
     name: leadName,
     category: rawCategory,
     industry,
@@ -72,43 +191,24 @@ export function parseLeadFromUrl(searchParams: URLSearchParams): { config: Busin
     rating,
     reviewCount,
     mapsUrl,
-    website
+    website,
   };
 
-  // Preset base de la industria
-  const preset = INDUSTRY_PRESETS.find(p => p.id === industry) || INDUSTRY_PRESETS[0];
-  const baseConfig = preset.defaultConfig as BusinessConfig;
+  // Base preset
+  let baseConfig: BusinessConfig;
+  const preset = INDUSTRY_PRESETS.find(p => p.id === industry);
+  if (preset && preset.defaultConfig) {
+    baseConfig = preset.defaultConfig as BusinessConfig;
+  } else {
+    baseConfig = createCustomFallbackPreset(leadName, rawCategory);
+  }
 
-  // Badge de prueba social basado en las reseñas reales de Google
+  // Social Proof badge
   let aboutBadge = baseConfig.aboutBadge || '⭐️ Garantía de Excelencia 2026';
   if (rating && reviewCount) {
     aboutBadge = `⭐️ ${rating.toFixed(1)} en Google (${reviewCount} reseñas)`;
   } else if (rating) {
     aboutBadge = `⭐️ ${rating.toFixed(1)} estrellas de valoración`;
-  }
-
-  // Titular personalizado según industria y nombre
-  let heroHeadline = baseConfig.heroHeadline;
-  let heroSubheadline = baseConfig.heroSubheadline;
-
-  if (industry === 'dental') {
-    heroHeadline = `Tu Sonrisa y Salud Dental en las Mejores Manos`;
-    heroSubheadline = `En ${leadName} cuidamos de tu bienestar con tratamientos de vanguardia, tecnología 3D y atención personalizada para toda la familia.`;
-  } else if (industry === 'beauty') {
-    heroHeadline = `Realza tu Belleza y Bienestar con Especialistas`;
-    heroSubheadline = `Descubre una experiencia exclusiva de cuidado personal en ${leadName}. Tratamientos personalizados con productos de primera calidad.`;
-  } else if (industry === 'restaurant') {
-    heroHeadline = `Una Experiencia Gastronómica Inolvidable`;
-    heroSubheadline = `En ${leadName} combinamos pasión por los mejores ingredientes, cocina artesanal y un ambiente pensado para disfrutar.`;
-  } else if (industry === 'gym') {
-    heroHeadline = `Transforma tu Rendimiento y Alcanza tus Metas`;
-    heroSubheadline = `Entrenamiento de alto nivel, equipamiento de última generación y coaches dedicados a tu progreso diario en ${leadName}.`;
-  } else if (industry === 'law') {
-    heroHeadline = `Defensa Legal Rigurosa y Compromiso con tus Intereses`;
-    heroSubheadline = `En ${leadName} aportamos soluciones jurídicas estratégicas con máxima transparencia, cercanía y eficacia demostrada.`;
-  } else {
-    heroHeadline = `Servicios Profesionales de Confianza en ${leadName}`;
-    heroSubheadline = `Ofrecemos la máxima calidad, atención cercana y resultados contrastados para satisfacer cada una de tus necesidades.`;
   }
 
   const cleanDomain = leadName.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -119,8 +219,6 @@ export function parseLeadFromUrl(searchParams: URLSearchParams): { config: Busin
     slogan: baseConfig.slogan || `Excelencia en ${rawCategory || 'Servicios'}`,
     industry,
     aboutBadge,
-    heroHeadline,
-    heroSubheadline,
     phone: phone || baseConfig.phone,
     whatsappNumber: phone || baseConfig.whatsappNumber,
     address: address || baseConfig.address,
@@ -133,8 +231,8 @@ export function parseLeadFromUrl(searchParams: URLSearchParams): { config: Busin
       about: true,
       testimonials: true,
       contact: true,
-      map: Boolean(address || mapsUrl)
-    }
+      map: Boolean(address || mapsUrl),
+    },
   };
 
   return { config: finalConfig, lead: leadData };
@@ -149,10 +247,11 @@ export interface PrototypeAssetData {
     role?: string;
     avatar?: string;
   }>;
+  config?: BusinessConfig;
 }
 
 /**
- * Consulta las fotos y opiniones reales persistidas en el CRM / Supabase
+ * Consulta la configuración completa y los activos persistidos en el CRM / Supabase
  */
 export async function fetchLeadPrototype(leadId: string): Promise<PrototypeAssetData | null> {
   try {
@@ -163,7 +262,8 @@ export async function fetchLeadPrototype(leadId: string): Promise<PrototypeAsset
     if (data.ok && data.prototype) {
       return {
         photos: data.prototype.photos || [],
-        reviews: data.prototype.reviews || []
+        reviews: data.prototype.reviews || [],
+        config: data.prototype.config || undefined,
       };
     }
   } catch (err) {
@@ -173,7 +273,7 @@ export async function fetchLeadPrototype(leadId: string): Promise<PrototypeAsset
 }
 
 /**
- * Aplica las fotos y reseñas reales al BusinessConfig
+ * Aplica las fotos y reseñas reales al BusinessConfig si no venía un config completo
  */
 export function applyRealAssetsToConfig(
   baseConfig: BusinessConfig,
@@ -182,12 +282,11 @@ export function applyRealAssetsToConfig(
   const { photos, reviews } = assets;
   const updated = { ...baseConfig };
 
-  // 1. Inyectar fotos reales del local en servicios y portfolio
   if (photos && photos.length > 0) {
     const mainPhoto = photos[0];
     updated.services = updated.services.map((s, idx) => ({
       ...s,
-      imageUrl: photos[idx % photos.length] || mainPhoto
+      imageUrl: photos[idx % photos.length] || mainPhoto,
     }));
 
     updated.portfolio = photos.map((photoUrl, idx) => ({
@@ -195,11 +294,10 @@ export function applyRealAssetsToConfig(
       title: `Instalaciones ${idx + 1}`,
       category: updated.name,
       imageUrl: photoUrl,
-      description: `Instalaciones y equipamiento profesional de ${updated.name}`
+      description: `Instalaciones y equipamiento profesional de ${updated.name}`,
     }));
   }
 
-  // 2. Inyectar reseñas reales con nombres reales de clientes de Google
   if (reviews && reviews.length > 0) {
     updated.testimonials = reviews.map((r, idx) => ({
       id: `real-t-${idx + 1}`,
@@ -207,10 +305,9 @@ export function applyRealAssetsToConfig(
       role: r.role || 'Opinión en Google Maps',
       comment: r.comment,
       rating: r.rating || 5,
-      avatar: r.avatar || `https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80`
+      avatar: r.avatar || `https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80`,
     }));
   }
 
   return updated;
 }
-

@@ -13,6 +13,7 @@ import type { BusinessConfig, IndustryType } from './types/business';
 import { INDUSTRY_PRESETS } from './data/industryPresets';
 import { downloadWebsiteZip } from './utils/htmlExporter';
 import { parseLeadFromUrl, fetchLeadPrototype, applyRealAssetsToConfig, type LeadUrlData } from './utils/leadImporter';
+import { GenerationLoader } from './components/GenerationLoader';
 import confetti from 'canvas-confetti';
 import { Copy, Check, ExternalLink } from 'lucide-react';
 
@@ -23,6 +24,8 @@ export function App() {
   );
   const [importedLead, setImportedLead] = useState<LeadUrlData | null>(null);
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const [isReady, setIsReady] = useState<boolean>(false);
 
   // Modal States
   const [showLogoBuilder, setShowLogoBuilder] = useState<boolean>(false);
@@ -38,19 +41,30 @@ export function App() {
       const params = new URLSearchParams(window.location.search);
       const parsed = parseLeadFromUrl(params);
       if (parsed) {
-        setConfig(parsed.config);
         setImportedLead(parsed.lead);
-        setCurrentView('pitch');
-        confetti({ particleCount: 80, spread: 70, origin: { y: 0.2 } });
-
-        // Carga en segundo plano de fotos y reseñas reales guardadas en Supabase
         const leadId = params.get('lead_id') || params.get('leadId') || params.get('id');
+
         if (leadId) {
+          setIsGenerating(true);
+          setIsReady(false);
+
           fetchLeadPrototype(leadId).then((assets) => {
-            if (assets && ((assets.photos && assets.photos.length > 0) || (assets.reviews && assets.reviews.length > 0))) {
-              setConfig((prev) => applyRealAssetsToConfig(prev, assets));
+            if (assets?.config) {
+              setConfig(assets.config);
+            } else if (assets && ((assets.photos && assets.photos.length > 0) || (assets.reviews && assets.reviews.length > 0))) {
+              setConfig(applyRealAssetsToConfig(parsed.config, assets));
+            } else {
+              setConfig(parsed.config);
             }
+            setIsReady(true);
+          }).catch(() => {
+            setConfig(parsed.config);
+            setIsReady(true);
           });
+        } else {
+          setConfig(parsed.config);
+          setCurrentView('pitch');
+          confetti({ particleCount: 80, spread: 70, origin: { y: 0.2 } });
         }
       }
     }
@@ -78,6 +92,20 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-inter selection:bg-sky-500 selection:text-white">
+      {/* Pantalla interactiva de progreso durante la extracción y generación */}
+      {isGenerating && (
+        <GenerationLoader
+          leadName={importedLead?.name || ''}
+          category={importedLead?.category}
+          isReady={isReady}
+          onFinish={() => {
+            setIsGenerating(false);
+            setCurrentView('pitch');
+            confetti({ particleCount: 90, spread: 75, origin: { y: 0.2 } });
+          }}
+        />
+      )}
+
       {/* Banner de Lead Importado del CRM */}
       {importedLead && currentView !== 'full' && (
         <aside aria-label="Lead importado del CRM" className="bg-gradient-to-r from-slate-950 via-sky-950 to-slate-950 text-white px-4 py-2.5 text-xs border-b border-sky-900/50 shadow-md flex flex-wrap items-center justify-between gap-3 sticky top-0 z-50">
