@@ -15,7 +15,6 @@ import {
   ChevronDown,
   ChevronUp,
   Clock,
-  Award,
   Menu,
   Utensils,
   Dumbbell
@@ -395,20 +394,6 @@ export const WebsiteTemplates: React.FC<WebsiteTemplatesProps> = ({ config }) =>
 
                     <div className="lg:col-span-5 relative">
                       <div className="relative mx-auto max-w-md lg:max-w-none">
-<<<<<<< HEAD
-                        <div className="rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-800/40 transform rotate-1 hover:rotate-0 transition-transform duration-500">
-                          <img src={heroImage} alt={name} className="w-full h-[410px] object-cover" />
-                        </div>
-                        
-                        {/* Floating Experience Card */}
-                        <div className={`absolute -bottom-6 -left-6 p-4 rounded-2xl border shadow-2xl max-w-xs flex items-center space-x-3.5 backdrop-blur-2xl animate-float-slow ${isDark ? 'bg-slate-900/90 border-slate-800 text-white' : 'bg-white/90 border-slate-200 text-slate-900'}`}>
-                          <div className="w-12 h-12 rounded-2xl border flex items-center justify-center shrink-0 shadow-inner" style={{ backgroundColor: `${palette.primary}20`, borderColor: `${palette.primary}40`, color: palette.primary }}>
-                            <Award className="w-6 h-6" />
-                          </div>
-                          <div>
-                            <div className="font-extrabold text-sm">+1.200 Casos Éxitosos</div>
-                            <div className="text-[11px] opacity-70 font-medium">Atención profesional de alta gama</div>
-=======
                         <div className="rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-900/10 transform rotate-1 hover:rotate-0 transition-transform duration-500">
                           <img src={heroImage} alt={name} referrerPolicy="no-referrer" className="w-full h-[400px] object-cover" />
                         </div>
@@ -419,7 +404,6 @@ export const WebsiteTemplates: React.FC<WebsiteTemplatesProps> = ({ config }) =>
                           <div>
                             <div className="font-extrabold text-sm">Atención Personalizada</div>
                             <div className="text-[11px] opacity-70 font-medium">{address ? address.split(',')[0] : 'Presupuestos transparentes sin compromiso'}</div>
->>>>>>> feature/auto-lead-generator
                           </div>
                         </div>
 
@@ -428,11 +412,7 @@ export const WebsiteTemplates: React.FC<WebsiteTemplatesProps> = ({ config }) =>
                   </div>
                 )}
 
-<<<<<<< HEAD
-                {/* MODEL 2: MODERN TECH & SAAS */}
-=======
                 {/* MODEL 2: MODERN TECH & SAAS (Centered hero + value pillars + photo hero) */}
->>>>>>> feature/auto-lead-generator
                 {config.layoutModel === 'modern' && (
                   <div className="text-center max-w-4xl mx-auto space-y-8">
                     {aboutBadge && (
@@ -664,18 +644,8 @@ export const WebsiteTemplates: React.FC<WebsiteTemplatesProps> = ({ config }) =>
                     {services.slice(0, 3).map((s, idx) => (
                       <div key={s.id} className={`p-8 rounded-3xl border transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-8 text-left shadow-xl ${isDark ? 'bg-slate-900/60' : 'bg-white'}`} style={{ borderColor: `${palette.primary}35` }}>
                         {s.imageUrl && (
-<<<<<<< HEAD
                           <div className="w-full md:w-56 h-40 rounded-2xl overflow-hidden shrink-0 shadow-md">
-                            <img src={s.imageUrl} alt={s.title} className="w-full h-full object-cover" />
-=======
-                          <div className="relative h-48 overflow-hidden">
-                            <img src={s.imageUrl} alt={s.title} referrerPolicy="no-referrer" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                            {s.badge && (
-                              <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase text-white shadow-md" style={{ background: palette.primary }}>
-                                {s.badge}
-                              </span>
-                            )}
->>>>>>> feature/auto-lead-generator
+                            <img src={s.imageUrl} alt={s.title} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                           </div>
                         )}
                         <div className="flex-1 space-y-2">
