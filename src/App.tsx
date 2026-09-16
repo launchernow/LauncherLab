@@ -12,7 +12,7 @@ import { DeployGuideModal } from './components/DeployGuideModal';
 import type { BusinessConfig, IndustryType } from './types/business';
 import { INDUSTRY_PRESETS } from './data/industryPresets';
 import { downloadWebsiteZip } from './utils/htmlExporter';
-import { parseLeadFromUrl, type LeadUrlData } from './utils/leadImporter';
+import { parseLeadFromUrl, fetchLeadPrototype, applyRealAssetsToConfig, type LeadUrlData } from './utils/leadImporter';
 import confetti from 'canvas-confetti';
 import { Copy, Check, ExternalLink } from 'lucide-react';
 
@@ -32,7 +32,7 @@ export function App() {
   const [showPublishModal, setShowPublishModal] = useState<boolean>(false);
   const [showDeployGuideModal, setShowDeployGuideModal] = useState<boolean>(false);
 
-  // Detección automática de Lead en URL desde el CRM
+  // Detección automática de Lead en URL desde el CRM y carga de fotos/reseñas reales
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -42,6 +42,16 @@ export function App() {
         setImportedLead(parsed.lead);
         setCurrentView('pitch');
         confetti({ particleCount: 80, spread: 70, origin: { y: 0.2 } });
+
+        // Carga en segundo plano de fotos y reseñas reales guardadas en Supabase
+        const leadId = params.get('lead_id') || params.get('leadId') || params.get('id');
+        if (leadId) {
+          fetchLeadPrototype(leadId).then((assets) => {
+            if (assets && ((assets.photos && assets.photos.length > 0) || (assets.reviews && assets.reviews.length > 0))) {
+              setConfig((prev) => applyRealAssetsToConfig(prev, assets));
+            }
+          });
+        }
       }
     }
   }, []);

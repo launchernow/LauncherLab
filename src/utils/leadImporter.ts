@@ -139,3 +139,78 @@ export function parseLeadFromUrl(searchParams: URLSearchParams): { config: Busin
 
   return { config: finalConfig, lead: leadData };
 }
+
+export interface PrototypeAssetData {
+  photos: string[];
+  reviews: Array<{
+    name: string;
+    rating: number;
+    comment: string;
+    role?: string;
+    avatar?: string;
+  }>;
+}
+
+/**
+ * Consulta las fotos y opiniones reales persistidas en el CRM / Supabase
+ */
+export async function fetchLeadPrototype(leadId: string): Promise<PrototypeAssetData | null> {
+  try {
+    const crmUrl = localStorage.getItem('crm_api_url') || 'http://localhost:8765';
+    const resp = await fetch(`${crmUrl}/api/prototypes/${leadId}`);
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    if (data.ok && data.prototype) {
+      return {
+        photos: data.prototype.photos || [],
+        reviews: data.prototype.reviews || []
+      };
+    }
+  } catch (err) {
+    console.warn('No se pudo conectar con el endpoint de prototipos del CRM:', err);
+  }
+  return null;
+}
+
+/**
+ * Aplica las fotos y reseñas reales al BusinessConfig
+ */
+export function applyRealAssetsToConfig(
+  baseConfig: BusinessConfig,
+  assets: PrototypeAssetData
+): BusinessConfig {
+  const { photos, reviews } = assets;
+  const updated = { ...baseConfig };
+
+  // 1. Inyectar fotos reales del local en servicios y portfolio
+  if (photos && photos.length > 0) {
+    const mainPhoto = photos[0];
+    updated.services = updated.services.map((s, idx) => ({
+      ...s,
+      imageUrl: photos[idx % photos.length] || mainPhoto
+    }));
+
+    updated.portfolio = photos.map((photoUrl, idx) => ({
+      id: `real-p-${idx + 1}`,
+      title: `Instalaciones ${idx + 1}`,
+      category: updated.name,
+      imageUrl: photoUrl,
+      description: `Instalaciones y equipamiento profesional de ${updated.name}`
+    }));
+  }
+
+  // 2. Inyectar reseñas reales con nombres reales de clientes de Google
+  if (reviews && reviews.length > 0) {
+    updated.testimonials = reviews.map((r, idx) => ({
+      id: `real-t-${idx + 1}`,
+      name: r.name || `Cliente verificado`,
+      role: r.role || 'Opinión en Google Maps',
+      comment: r.comment,
+      rating: r.rating || 5,
+      avatar: r.avatar || `https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80`
+    }));
+  }
+
+  return updated;
+}
+
