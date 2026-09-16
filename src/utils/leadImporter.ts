@@ -213,6 +213,9 @@ export function parseLeadFromUrl(searchParams: URLSearchParams): { config: Busin
 
   const cleanDomain = leadName.toLowerCase().replace(/[^a-z0-9]/g, '');
 
+  const rawDigits = (phone || '').replace(/\D/g, '');
+  const formattedWhatsapp = rawDigits.length === 9 ? `34${rawDigits}` : rawDigits || baseConfig.whatsappNumber;
+
   const finalConfig: BusinessConfig = {
     ...baseConfig,
     name: leadName,
@@ -220,7 +223,7 @@ export function parseLeadFromUrl(searchParams: URLSearchParams): { config: Busin
     industry,
     aboutBadge,
     phone: phone || baseConfig.phone,
-    whatsappNumber: phone || baseConfig.whatsappNumber,
+    whatsappNumber: formattedWhatsapp,
     address: address || baseConfig.address,
     email: `contacto@${cleanDomain || 'negocio'}.es`,
     googleMapsEmbedUrl: mapsUrl || baseConfig.googleMapsEmbedUrl,
@@ -250,17 +253,65 @@ export interface PrototypeAssetData {
   config?: BusinessConfig;
 }
 
+const SUPABASE_REST_URL = 'https://uejdvdkaczjldzwuhnch.supabase.co/rest/v1';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlamR2ZGthY3pqbGR6d3VobmNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzOTUyMTgsImV4cCI6MjEwNDk3MTIxOH0.zGbB6I1OPttZV5JNwI-KqXhUGXmkQL6424MgUC6-VCk';
+
 /**
- * Consulta la configuración completa y los activos persistidos en el CRM / Supabase
+ * Consulta la configuración completa y los activos persistidos en Supabase o en el CRM
  */
-export async function fetchLeadPrototype(leadId: string): Promise<PrototypeAssetData | null> {
-  const customUrl = localStorage.getItem('crm_api_url');
-  const candidateUrls = customUrl ? [customUrl] : ['http://localhost:8765', 'http://127.0.0.1:8765'];
+export async function fetchLeadPrototype(leadId: string, crmUrlFromParam?: string | null): Promise<PrototypeAssetData | null> {
+  // 1. Intento primario: lectura directa desde Supabase REST (HTTPS seguro, ultra-rápido, sin Mixed Content)
+  try {
+    const sController = new AbortController();
+    const sTimeout = setTimeout(() => sController.abort(), 4000);
+    const sResp = await fetch(
+      `${SUPABASE_REST_URL}/lead_prototypes?lead_id=eq.${encodeURIComponent(leadId)}&select=photos,reviews,config`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        signal: sController.signal,
+      }
+    );
+    clearTimeout(sTimeout);
+
+    if (sResp.ok) {
+      const rows = await sResp.json();
+      if (Array.isArray(rows) && rows.length > 0 && rows[0]) {
+        const item = rows[0];
+        if (item.config || (item.photos && item.photos.length > 0) || (item.reviews && item.reviews.length > 0)) {
+          return {
+            photos: item.photos || [],
+            reviews: item.reviews || [],
+            config: item.config || undefined,
+          };
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Consulta directa a Supabase lead_prototypes no disponible:', err);
+  }
+
+  // 2. Fallback: consulta al servidor CRM (local o remoto)
+  const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+  const customUrl = localStorage.getItem('crm_api_url') || crmUrlFromParam;
+
+  const candidateUrls: string[] = [];
+  if (customUrl) {
+    const cleanUrl = customUrl.replace(/\/$/, '');
+    if (!isHttps || cleanUrl.startsWith('https://') || cleanUrl.includes('localhost') || cleanUrl.includes('127.0.0.1')) {
+      candidateUrls.push(cleanUrl);
+    }
+  }
+  if (!isHttps) {
+    candidateUrls.push('http://localhost:8765', 'http://127.0.0.1:8765');
+  }
 
   for (const baseUrl of candidateUrls) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 35000);
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
       const resp = await fetch(`${baseUrl}/api/prototypes/${leadId}`, {
         signal: controller.signal,
       });
@@ -276,7 +327,7 @@ export async function fetchLeadPrototype(leadId: string): Promise<PrototypeAsset
         };
       }
     } catch (err) {
-      console.warn(`Intento de conexión a ${baseUrl} fallido:`, err);
+      console.warn(`Intento de conexión a CRM en ${baseUrl} fallido:`, err);
     }
   }
 

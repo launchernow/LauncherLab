@@ -48,7 +48,8 @@ export function App() {
           setIsGenerating(true);
           setIsReady(false);
 
-          fetchLeadPrototype(leadId).then((assets) => {
+          const crmUrl = params.get('crm_url');
+          fetchLeadPrototype(leadId, crmUrl).then((assets) => {
             if (assets?.config && Object.keys(assets.config).length > 5) {
               setConfig(assets.config);
             } else if (assets && ((assets.photos && assets.photos.length > 0) || (assets.reviews && assets.reviews.length > 0))) {
