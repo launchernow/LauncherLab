@@ -280,7 +280,8 @@ export async function fetchLeadPrototype(leadId: string, crmUrlFromParam?: strin
       const rows = await sResp.json();
       if (Array.isArray(rows) && rows.length > 0 && rows[0]) {
         const item = rows[0];
-        if (item.config || (item.photos && item.photos.length > 0) || (item.reviews && item.reviews.length > 0)) {
+        const hasRealAssets = (item.photos && item.photos.length > 0) || (item.reviews && item.reviews.length > 0);
+        if (hasRealAssets) {
           return {
             photos: item.photos || [],
             reviews: item.reviews || [],
@@ -293,7 +294,7 @@ export async function fetchLeadPrototype(leadId: string, crmUrlFromParam?: strin
     console.warn('Consulta directa a Supabase lead_prototypes no disponible:', err);
   }
 
-  // 2. Fallback: consulta al servidor CRM (local o remoto)
+  // 2. Fallback: consulta al servidor CRM para scraping en vivo con Playwright
   const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
   const customUrl = localStorage.getItem('crm_api_url') || crmUrlFromParam;
 
@@ -305,13 +306,16 @@ export async function fetchLeadPrototype(leadId: string, crmUrlFromParam?: strin
     }
   }
   if (!isHttps) {
-    candidateUrls.push('http://localhost:8765', 'http://127.0.0.1:8765');
+    candidateUrls.push('http://127.0.0.1:8765');
   }
 
-  for (const baseUrl of candidateUrls) {
+  const uniqueCandidates = Array.from(new Set(candidateUrls));
+
+  for (const baseUrl of uniqueCandidates) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      // 35 segundos para permitir que Playwright complete la navegación y extracción en Google Maps
+      const timeoutId = setTimeout(() => controller.abort(), 35000);
       const resp = await fetch(`${baseUrl}/api/prototypes/${leadId}`, {
         signal: controller.signal,
       });
